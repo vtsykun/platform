@@ -5,6 +5,7 @@ language: php
 branches:
   only:
     - master
+    - fix/builds
     - /^\d+\.\d+$/
 
 php:
