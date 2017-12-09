@@ -55,11 +55,11 @@ class EntityFieldController extends FOSRestController implements ClassResourceIn
     public function getFieldsAction($entityName)
     {
         $entityName = $this->get('oro_entity.routing_helper')->resolveEntityClass($entityName);
-        $withRelations = filter_var($this->getRequest()->get('with-relations'), FILTER_VALIDATE_BOOLEAN);
-        $withEntityDetails = filter_var($this->getRequest()->get('with-entity-details'), FILTER_VALIDATE_BOOLEAN);
-        $withUnidirectional = filter_var($this->getRequest()->get('with-unidirectional'), FILTER_VALIDATE_BOOLEAN);
-        $withVirtualFields = filter_var($this->getRequest()->get('with-virtual-fields'), FILTER_VALIDATE_BOOLEAN);
-        $applyExclusions = filter_var($this->getRequest()->get('apply-exclusions'), FILTER_VALIDATE_BOOLEAN);
+        $withRelations = filter_var($this->get('request_stack')->getCurrentRequest()->get('with-relations'), FILTER_VALIDATE_BOOLEAN);
+        $withEntityDetails = filter_var($this->get('request_stack')->getCurrentRequest()->get('with-entity-details'), FILTER_VALIDATE_BOOLEAN);
+        $withUnidirectional = filter_var($this->get('request_stack')->getCurrentRequest()->get('with-unidirectional'), FILTER_VALIDATE_BOOLEAN);
+        $withVirtualFields = filter_var($this->get('request_stack')->getCurrentRequest()->get('with-virtual-fields'), FILTER_VALIDATE_BOOLEAN);
+        $applyExclusions = filter_var($this->get('request_stack')->getCurrentRequest()->get('apply-exclusions'), FILTER_VALIDATE_BOOLEAN);
 
         /** @var EntityFieldProvider $provider */
         $provider = $this->get('oro_entity.entity_field_provider');

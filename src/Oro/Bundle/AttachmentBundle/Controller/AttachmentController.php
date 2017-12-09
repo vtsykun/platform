@@ -3,7 +3,7 @@
 namespace Oro\Bundle\AttachmentBundle\Controller;
 
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Security\Core\Util\ClassUtils;
+use Symfony\Component\Security\Acl\Util\ClassUtils;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -70,7 +70,7 @@ class AttachmentController extends Controller
 
         $formAction = $entityRoutingHelper->generateUrlByRequest(
             'oro_attachment_create',
-            $this->getRequest(),
+            $this->get('request_stack')->getCurrentRequest(),
             $entityRoutingHelper->getRouteParameters($entityClass, $entityId)
         );
 
@@ -91,7 +91,7 @@ class AttachmentController extends Controller
      */
     public function updateAction(Attachment $attachment)
     {
-        $formAction = $this->getRequest()->getUri();
+        $formAction = $this->get('request_stack')->getCurrentRequest()->getUri();
         $form       = $this->createForm(
             $this->container->get('oro_attachment.form.type'),
             $attachment,

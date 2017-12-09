@@ -41,8 +41,7 @@ services:
         arguments: ['@validator', '@oro_entity_config.config_manager', '@oro_config.global']
 
     oro_attachment.form.handler.attachment:
-        class: %oro_attachment.form.handler.attachment.class%
-        scope: request
+        class: '%oro_attachment.form.handler.attachment.class%'
         arguments:
-            - '@request'
+            - '@request_stack'
             - '@doctrine.orm.entity_manager'

@@ -2,6 +2,7 @@
 
 namespace Oro\Bundle\EntityBundle;
 
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -71,14 +72,7 @@ class OroEntityBundle extends Bundle
         $container->addCompilerPass(new EntityFallbackCompilerPass());
         $container->addCompilerPass(new SqlWalkerPass());
         $container->addCompilerPass(new EntityRepositoryCompilerPass());
-
-        if ($container instanceof ExtendedContainerBuilder) {
-            $container->addCompilerPass(new GeneratedValueStrategyListenerPass());
-            $container->moveCompilerPassBefore(
-                'Oro\Bundle\EntityBundle\DependencyInjection\Compiler\GeneratedValueStrategyListenerPass',
-                'Symfony\Bridge\Doctrine\DependencyInjection\CompilerPass\RegisterEventListenersAndSubscribersPass'
-            );
-        }
+        $container->addCompilerPass(new GeneratedValueStrategyListenerPass(),  PassConfig::TYPE_BEFORE_OPTIMIZATION, 4);
 
         $container->addCompilerPass(
             new AddTransactionWatcherCompilerPass('oro.doctrine.connection.transaction_watcher')

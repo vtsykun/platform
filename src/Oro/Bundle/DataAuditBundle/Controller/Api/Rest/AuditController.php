@@ -75,8 +75,8 @@ class AuditController extends RestGetController implements ClassResourceInterfac
      */
     public function cgetAction()
     {
-        $page             = (int)$this->getRequest()->get('page', 1);
-        $limit = (int)$this->getRequest()->get('limit', self::ITEMS_PER_PAGE);
+        $page             = (int)$this->get('request_stack')->getCurrentRequest()->get('page', 1);
+        $limit = (int)$this->get('request_stack')->getCurrentRequest()->get('limit', self::ITEMS_PER_PAGE);
         $filterParameters = [
             'loggedAt'    => new HttpDateTimeParameterFilter(),
             'user'        => new IdentifierToReferenceFilter($this->getDoctrine(), 'OroUserBundle:User'),
@@ -133,7 +133,7 @@ class AuditController extends RestGetController implements ClassResourceInterfac
     {
         /* @var $provider EntityWithFieldsProvider */
         $provider = $this->get('oro_query_designer.entity_field_list_provider');
-        $withRelations = filter_var($this->getRequest()->get('with-relations', true), FILTER_VALIDATE_BOOLEAN);
+        $withRelations = filter_var($this->get('request_stack')->getCurrentRequest()->get('with-relations', true), FILTER_VALIDATE_BOOLEAN);
         $statusCode = Codes::HTTP_OK;
 
         try {

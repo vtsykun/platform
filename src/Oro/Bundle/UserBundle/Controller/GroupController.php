@@ -85,7 +85,7 @@ class GroupController extends Controller
                 $this->get('translator')->trans('oro.user.controller.group.message.saved')
             );
 
-            if (!$this->getRequest()->get('_widgetContainer')) {
+            if (!$this->get('request_stack')->getCurrentRequest()->get('_widgetContainer')) {
                 return $this->get('oro_ui.router')->redirect($entity);
             }
         }

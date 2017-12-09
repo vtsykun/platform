@@ -38,9 +38,9 @@ class GridController extends Controller
     {
         return [
             'gridName'     => $gridName,
-            'params'       => $this->getRequest()->get('params', []),
+            'params'       => $this->get('request_stack')->getCurrentRequest()->get('params', []),
             'renderParams' => $this->getRenderParams(),
-            'multiselect'  => (bool)$this->getRequest()->get('multiselect', false),
+            'multiselect'  => (bool)$this->get('request_stack')->getCurrentRequest()->get('multiselect', false),
         ];
     }
 
@@ -165,7 +165,7 @@ class GridController extends Controller
      */
     public function massActionAction($gridName, $actionName)
     {
-        $request = $this->getRequest();
+        $request = $this->get('request_stack')->getCurrentRequest();
 
         /** @var MassActionDispatcher $massActionDispatcher */
         $massActionDispatcher = $this->get('oro_datagrid.mass_action.dispatcher');
@@ -189,8 +189,8 @@ class GridController extends Controller
      */
     protected function getRenderParams()
     {
-        $renderParams      = $this->getRequest()->get('renderParams', []);
-        $renderParamsTypes = $this->getRequest()->get('renderParamsTypes', []);
+        $renderParams      = $this->get('request_stack')->getCurrentRequest()->get('renderParams', []);
+        $renderParamsTypes = $this->get('request_stack')->getCurrentRequest()->get('renderParamsTypes', []);
 
         foreach ($renderParamsTypes as $param => $type) {
             if (array_key_exists($param, $renderParams)) {

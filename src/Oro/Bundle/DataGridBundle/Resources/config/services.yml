@@ -199,21 +199,19 @@ services:
 
     oro_datagrid.form.grid_view.api:
         class:                        Symfony\Component\Form\Form
-        factory_method:               createNamed
-        factory_service:              form.factory
+        factory: ['@form.factory', createNamed]
         arguments:
             - ~
             - oro_datagrid_grid_view
 
     oro_datagrid.grid_view.form.handler.api:
-        class: %oro_datagrid.grid_view.form.handler.api.class%
+        class: '%oro_datagrid.grid_view.form.handler.api.class%'
         arguments:
             - '@oro_datagrid.form.grid_view.api'
-            - '@request'
+            - '@request_stack'
             - '@doctrine'
             - '@oro_datagrid.grid_view.manager'
             - '@security.token_storage'
-        scope: request
 
     oro_datagrid.datagrid.inline_edit_column_options_guesser:
         class: %oro_datagrid.datagrid.inline_edit_column_options_guesser.class%
@@ -303,7 +301,7 @@ services:
     oro_datagrid.cache.datagrid_configuration_cache_warmer:
         class: Oro\Bundle\DataGridBundle\Cache\DatagridConfigurationCacheWarmer
         arguments:
-            - @oro_datagrid.configuration.provider
+            - '@oro_datagrid.configuration.provider'
         tags:
             - { name: kernel.cache_warmer }
 

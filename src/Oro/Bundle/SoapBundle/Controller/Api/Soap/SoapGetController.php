@@ -4,7 +4,7 @@ namespace Oro\Bundle\SoapBundle\Controller\Api\Soap;
 
 use Doctrine\Instantiator\Instantiator;
 use Symfony\Component\DependencyInjection\ContainerAware;
-use Symfony\Component\Security\Core\Util\ClassUtils;
+use Symfony\Component\Security\Acl\Util\ClassUtils;
 
 use Oro\Bundle\SoapBundle\Controller\Api\EntityManagerAwareInterface;
 use Oro\Bundle\SoapBundle\Entity\SoapEntityInterface;

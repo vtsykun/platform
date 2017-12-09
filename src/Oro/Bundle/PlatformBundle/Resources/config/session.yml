@@ -1,8 +1,7 @@
 services:
     doctrine.dbal.session_connection.wrapped:
         public: false
-        factory_service: doctrine.dbal.session_connection
-        factory_method:  getWrappedConnection
+        factory: ['@doctrine.dbal.session_connection', getWrappedConnection]
         class:           PDO
 
     session.handler.pdo:

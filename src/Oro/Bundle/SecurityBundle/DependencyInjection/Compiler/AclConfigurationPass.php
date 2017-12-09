@@ -46,14 +46,10 @@ class AclConfigurationPass implements CompilerPassInterface
      */
     protected function configureDefaultAclProvider(ContainerBuilder $container)
     {
-        if ($container->hasParameter(self::DEFAULT_ACL_DBAL_PROVIDER_CLASS)) {
-            if ($container->hasParameter(self::NEW_ACL_DBAL_PROVIDER_CLASS)) {
-                // change implementation of ACL DBAL provider
-                $container->setParameter(
-                    self::DEFAULT_ACL_DBAL_PROVIDER_CLASS,
-                    $container->getParameter(self::NEW_ACL_DBAL_PROVIDER_CLASS)
-                );
-            }
+        //todo: Parameter remove
+        if ($container->hasParameter(self::NEW_ACL_DBAL_PROVIDER_CLASS)) {
+            $def = $container->getDefinition('security.acl.dbal.provider');
+            $def->setClass($container->getParameter(self::NEW_ACL_DBAL_PROVIDER_CLASS));
         }
     }
 

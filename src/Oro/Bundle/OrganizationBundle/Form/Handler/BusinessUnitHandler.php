@@ -9,27 +9,28 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 use Oro\Bundle\UserBundle\Entity\User;
 use Oro\Bundle\OrganizationBundle\Entity\BusinessUnit;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class BusinessUnitHandler
 {
     /** @var FormInterface */
     protected $form;
 
-    /** @var Request */
-    protected $request;
+    /** @var RequestStack */
+    protected $requestStack;
 
     /** @var ObjectManager */
     protected $manager;
 
     /**
      * @param FormInterface $form
-     * @param Request       $request
+     * @param RequestStack       $request
      * @param ObjectManager $manager
      */
-    public function __construct(FormInterface $form, Request $request, ObjectManager $manager)
+    public function __construct(FormInterface $form, RequestStack $request, ObjectManager $manager)
     {
         $this->form    = $form;
-        $this->request = $request;
+        $this->requestStack = $request;
         $this->manager = $manager;
     }
 
@@ -42,9 +43,10 @@ class BusinessUnitHandler
     public function process(BusinessUnit $entity)
     {
         $this->form->setData($entity);
+        $request = $this->requestStack->getCurrentRequest();
 
-        if (in_array($this->request->getMethod(), array('POST', 'PUT'))) {
-            $this->form->submit($this->request);
+        if (in_array($request->getMethod(), ['POST', 'PUT'])) {
+            $this->form->submit($request);
 
             if ($this->form->isValid()) {
                 $appendUsers = $this->form->get('appendUsers')->getData();

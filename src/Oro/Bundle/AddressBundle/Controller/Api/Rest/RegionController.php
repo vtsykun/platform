@@ -34,7 +34,7 @@ class RegionController extends FOSRestController
      */
     public function getAction()
     {
-        $id = $this->getRequest()->get('id');
+        $id = $this->get('request_stack')->getCurrentRequest()->get('id');
         if (!$id) {
             return $this->handleView($this->view(null, Codes::HTTP_NOT_FOUND));
         }

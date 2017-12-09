@@ -16,18 +16,16 @@ services:
 
     oro_report.form.report:
         class:           Symfony\Component\Form\Form
-        factory_method:  createNamed
-        factory_service: form.factory
+        factory: ['@form.factory', createNamed]
         arguments:
             - "oro_report_form"
             - "oro_report"
 
     oro_report.form.handler.report:
-        class: %oro_report.form.handler.report.class%
-        scope: request
+        class: '%oro_report.form.handler.report.class%'
         arguments:
             - '@oro_report.form.report'
-            - '@request'
+            - '@request_stack'
             - '@doctrine.orm.entity_manager'
 
     oro_report.report.manager.api:

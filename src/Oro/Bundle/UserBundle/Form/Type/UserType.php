@@ -8,7 +8,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -26,28 +26,28 @@ class UserType extends AbstractType
     /** @var TokenAccessorInterface */
     protected $tokenAccessor;
 
-    /** @var bool */
-    protected $isMyProfilePage;
-
     /** @var PasswordFieldOptionsProvider */
     protected $optionsProvider;
 
+    /** @var RequestStack */
+    protected $requestStack;
+
     /**
      * @param AuthorizationCheckerInterface $authorizationChecker
-     * @param TokenAccessorInterface        $tokenAccessor
-     * @param Request                       $request
-     * @param PasswordFieldOptionsProvider  $optionsProvider
+     * @param TokenAccessorInterface $tokenAccessor
+     * @param RequestStack $requestStack
+     * @param PasswordFieldOptionsProvider $optionsProvider
      */
     public function __construct(
         AuthorizationCheckerInterface $authorizationChecker,
         TokenAccessorInterface $tokenAccessor,
-        Request $request,
+        RequestStack $requestStack,
         PasswordFieldOptionsProvider $optionsProvider
     ) {
         $this->authorizationChecker = $authorizationChecker;
         $this->tokenAccessor = $tokenAccessor;
+        $this->requestStack = $requestStack;
 
-        $this->isMyProfilePage = $request->attributes->get('_route') === 'oro_user_profile_update';
         $this->optionsProvider = $optionsProvider;
     }
 
@@ -84,9 +84,9 @@ class UserType extends AbstractType
                     },
                     'multiple'      => true,
                     'expanded'      => true,
-                    'required'      => !$this->isMyProfilePage,
-                    'read_only'     => $this->isMyProfilePage,
-                    'disabled'      => $this->isMyProfilePage,
+                    'required'      => !$this->isMyProfilePage(),
+                    'read_only'     => $this->isMyProfilePage(),
+                    'disabled'      => $this->isMyProfilePage(),
                     'translatable_options' => false
                 ]
             );
@@ -102,8 +102,8 @@ class UserType extends AbstractType
                     'multiple'  => true,
                     'expanded'  => true,
                     'required'  => false,
-                    'read_only' => $this->isMyProfilePage,
-                    'disabled'  => $this->isMyProfilePage,
+                    'read_only' => $this->isMyProfilePage(),
+                    'disabled'  => $this->isMyProfilePage(),
                     'translatable_options' => false
                 ]
             );
@@ -170,7 +170,7 @@ class UserType extends AbstractType
                         ? ['Roles', 'Default']
                         : ['Registration', 'Roles', 'Default'];
                 },
-                'ownership_disabled'   => $this->isMyProfilePage
+                'ownership_disabled'   => $this->isMyProfilePage()
             ]
         );
     }
@@ -246,5 +246,11 @@ class UserType extends AbstractType
                 ]
             );
         }
+    }
+
+    protected function isMyProfilePage()
+    {
+        $request = $this->requestStack->getCurrentRequest();
+        return $request->attributes->get('_route') === 'oro_user_profile_update';
     }
 }

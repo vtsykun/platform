@@ -38,26 +38,11 @@ class OroPlatformBundle extends Bundle
                 'Oro\Bundle\EntityConfigBundle\DependencyInjection\Utils\ServiceLink'
             )
         );
+
         $container->addCompilerPass(new UpdateDoctrineConfigurationPass());
-        if ($container instanceof ExtendedContainerBuilder) {
-            $container->addCompilerPass(new LazyDoctrineOrmListenersPass());
-            $container->moveCompilerPassBefore(
-                LazyDoctrineOrmListenersPass::class,
-                EntityListenerPass::class
-            );
-
-            $container->addCompilerPass(new LazyDoctrineListenersPass());
-            $container->moveCompilerPassBefore(
-                LazyDoctrineListenersPass::class,
-                RegisterEventListenersAndSubscribersPass::class
-            );
-
-            $container->addCompilerPass(new UpdateDoctrineEventHandlersPass());
-            $container->moveCompilerPassBefore(
-                UpdateDoctrineEventHandlersPass::class,
-                RegisterEventListenersAndSubscribersPass::class
-            );
-        }
+        $container->addCompilerPass(new LazyDoctrineOrmListenersPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 4);
+        $container->addCompilerPass(new LazyDoctrineListenersPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 4);
+        $container->addCompilerPass(new UpdateDoctrineEventHandlersPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 4);
         $container->addCompilerPass(new UndoLazyEntityManagerPass());
     }
 }

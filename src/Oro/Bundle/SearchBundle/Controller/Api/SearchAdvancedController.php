@@ -114,7 +114,7 @@ class SearchAdvancedController extends FOSRestController
         $view = new View();
 
         $result = $this->get('oro_search.index')->advancedSearch(
-            $this->getRequest()->get('query')
+            $this->get('request_stack')->getCurrentRequest()->get('query')
         );
 
         $dispatcher = $this->container->get('event_dispatcher');

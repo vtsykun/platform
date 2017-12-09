@@ -17,6 +17,7 @@ use Oro\Bundle\TranslationBundle\Strategy\TranslationStrategyProvider;
  */
 class Translator extends BaseTranslator
 {
+
     const DEFAULT_LOCALE = 'en';
 
     /** @var DynamicTranslationMetadataCache|null */
@@ -60,20 +61,27 @@ class Translator extends BaseTranslator
     /** @var array */
     protected $resourceFiles = [];
 
+    protected $args;
+
+    /** @var ContainerInterface */
+    protected $serviceContainer;
+
     /**
      * {@inheritdoc}
      */
     public function __construct(
-        ContainerInterface $container,
-        MessageSelector $messageSelector,
-        $loaderIds = [],
-        array $options = []
-    ) {
-        $this->messageSelector = $messageSelector;
-        $this->originalOptions = $options;
-        $this->resourceFiles = $options['resource_files'];
 
-        parent::__construct($container, $messageSelector, $loaderIds, $options);
+    ) {
+        $this->args = func_get_args();
+        parent::__construct(...$this->args);
+    }
+
+    /**
+     * @param ContainerInterface $container
+     */
+    public function setServiceContainer(ContainerInterface $container)
+    {
+        $this->serviceContainer = $container;
     }
 
     /**
@@ -226,52 +234,53 @@ class Translator extends BaseTranslator
      */
     public function rebuildCache()
     {
-        $cacheDir = $this->originalOptions['cache_dir'];
-
-        $tmpDir = $cacheDir . uniqid('', true);
-
-        $options = array_merge(
-            $this->originalOptions,
-            [
-                'cache_dir' => $tmpDir,
-                'resource_files' => array_map(
-                    function (array $localeResources) {
-                        return array_unique($localeResources);
-                    },
-                    $this->resourceFiles
-                )
-            ]
-        );
-
-        $provider = $this->getStrategyProvider();
-
-        $currentStrategy = $provider->getStrategy();
-
-        foreach ($provider->getStrategies() as $strategy) {
-            $provider->setStrategy($strategy);
-
-            /* @var $translator Translator */
-            $translator = new static($this->container, $this->messageSelector, $this->loaderIds, $options);
-            $translator->setDatabaseMetadataCache($this->databaseTranslationMetadataCache);
-
-            $translator->warmUp($tmpDir);
-        }
-
-        $provider->setStrategy($currentStrategy);
-
-        $iterator = new \IteratorIterator(new \DirectoryIterator($tmpDir));
-        foreach ($iterator as $path) {
-            if (!$path->isFile()) {
-                continue;
-            }
-            copy($path->getPathName(), $cacheDir . DIRECTORY_SEPARATOR . $path->getFileName());
-            unlink($path->getPathName());
-        }
-
-        rmdir($tmpDir);
-
-        // cleanup local cache
-        $this->catalogues = [];
+//        throw new \RuntimeException('NEED WORKS');
+//        $cacheDir = $this->originalOptions['cache_dir'];
+//
+//        $tmpDir = $cacheDir . uniqid('', true);
+//
+//        $options = array_merge(
+//            $this->originalOptions,
+//            [
+//                'cache_dir' => $tmpDir,
+//                'resource_files' => array_map(
+//                    function (array $localeResources) {
+//                        return array_unique($localeResources);
+//                    },
+//                    $this->resourceFiles
+//                )
+//            ]
+//        );
+//
+//        $provider = $this->getStrategyProvider();
+//
+//        $currentStrategy = $provider->getStrategy();
+//
+//        foreach ($provider->getStrategies() as $strategy) {
+//            $provider->setStrategy($strategy);
+//
+//            /* @var $translator Translator */
+//            $translator = new static();
+//            $translator->setDatabaseMetadataCache($this->databaseTranslationMetadataCache);
+//
+//            $translator->warmUp($tmpDir);
+//        }
+//
+//        $provider->setStrategy($currentStrategy);
+//
+//        $iterator = new \IteratorIterator(new \DirectoryIterator($tmpDir));
+//        foreach ($iterator as $path) {
+//            if (!$path->isFile()) {
+//                continue;
+//            }
+//            copy($path->getPathName(), $cacheDir . DIRECTORY_SEPARATOR . $path->getFileName());
+//            unlink($path->getPathName());
+//        }
+//
+//        rmdir($tmpDir);
+//
+//        // cleanup local cache
+//        $this->catalogues = [];
     }
 
     /**
@@ -423,7 +432,7 @@ class Translator extends BaseTranslator
                 array_unshift($locales, $locale);
                 $locales = array_unique($locales);
 
-                $availableDomainsData = $this->container->get('oro_translation.provider.translation_domain')
+                $availableDomainsData = $this->serviceContainer->get('oro_translation.provider.translation_domain')
                     ->getAvailableDomainsForLocales($locales);
                 foreach ($availableDomainsData as $item) {
                     $item['resource'] = new OrmTranslationResource(
@@ -445,7 +454,7 @@ class Translator extends BaseTranslator
      */
     protected function isInstalled()
     {
-        return $this->container->hasParameter('installed') && $this->container->getParameter('installed');
+        return $this->serviceContainer->hasParameter('installed') && $this->serviceContainer->getParameter('installed');
     }
 
     /**
@@ -456,7 +465,7 @@ class Translator extends BaseTranslator
     protected function checkDatabase()
     {
         if (null === $this->installed) {
-            $this->installed = (bool)$this->container->getParameter('installed');
+            $this->installed = (bool)$this->serviceContainer->getParameter('installed');
         }
 
         return $this->installed;
@@ -468,6 +477,6 @@ class Translator extends BaseTranslator
     protected function getStrategyProvider()
     {
         // can't inject strategy provider directly because container creates new instances for each injected service
-        return $this->container->get('oro_translation.strategy.provider');
+        return $this->serviceContainer->get('oro_translation.strategy.provider');
     }
 }

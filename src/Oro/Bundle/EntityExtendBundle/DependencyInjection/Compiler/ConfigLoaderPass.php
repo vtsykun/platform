@@ -2,6 +2,7 @@
 
 namespace Oro\Bundle\EntityExtendBundle\DependencyInjection\Compiler;
 
+use Oro\Bundle\EntityExtendBundle\Validator\Validation;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -14,6 +15,9 @@ class ConfigLoaderPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
+        $def = $container->getDefinition('validator.builder');
+        $def->setFactory([Validation::class, 'createValidatorBuilder']);
+
         if ($container->hasParameter(self::CONFIG_LOADER_CLASS_PARAM)) {
             $container->setParameter(
                 self::CONFIG_LOADER_CLASS_PARAM,

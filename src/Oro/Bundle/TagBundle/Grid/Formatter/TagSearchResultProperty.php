@@ -2,7 +2,7 @@
 
 namespace Oro\Bundle\TagBundle\Grid\Formatter;
 
-use Symfony\Component\Security\Core\Util\ClassUtils;
+use Symfony\Component\Security\Acl\Util\ClassUtils;
 
 use Oro\Bundle\DataGridBundle\Datasource\ResultRecordInterface;
 use Oro\Bundle\EntityConfigBundle\Provider\ConfigProvider;

@@ -6,6 +6,7 @@ use Psr\Log\LoggerInterface;
 
 use Symfony\Bundle\FrameworkBundle\Templating\DelegatingEngine;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -45,7 +46,7 @@ class UserHandler extends AbstractUserHandler
 
     /**
      * @param FormInterface $form
-     * @param Request $request
+     * @param RequestStack $request
      * @param UserManager $manager
      * @param ConfigManager $userConfigManager
      * @param DelegatingEngine $templating
@@ -56,7 +57,7 @@ class UserHandler extends AbstractUserHandler
      */
     public function __construct(
         FormInterface $form,
-        Request $request,
+        RequestStack $request,
         UserManager $manager,
         ConfigManager $userConfigManager = null,
         DelegatingEngine $templating = null,

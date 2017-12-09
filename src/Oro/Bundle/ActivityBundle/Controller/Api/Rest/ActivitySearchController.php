@@ -66,13 +66,13 @@ class ActivitySearchController extends RestGetController
         $manager = $this->getManager();
         $manager->setClass($manager->resolveEntityClass($activity, true));
 
-        $page  = (int)$this->getRequest()->get('page', 1);
-        $limit = (int)$this->getRequest()->get('limit', self::ITEMS_PER_PAGE);
+        $page  = (int)$this->get('request_stack')->getCurrentRequest()->get('page', 1);
+        $limit = (int)$this->get('request_stack')->getCurrentRequest()->get('limit', self::ITEMS_PER_PAGE);
 
         $filters = [
-            'search' => $this->getRequest()->get('search')
+            'search' => $this->get('request_stack')->getCurrentRequest()->get('search')
         ];
-        $from    = $this->getRequest()->get('from', null);
+        $from    = $this->get('request_stack')->getCurrentRequest()->get('from', null);
         if ($from) {
             $filter          = new ChainParameterFilter(
                 [

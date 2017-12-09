@@ -228,30 +228,30 @@ abstract class OroKernel extends Kernel
         parent::boot();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function dumpContainer(ConfigCache $cache, ContainerBuilder $container, $class, $baseClass)
-    {
-        // cache the container
-        $dumper = new PhpDumper($container);
-
-        if ($container->getParameter('installed')
-            && class_exists('ProxyManager\Configuration')
-            && class_exists('Symfony\Bridge\ProxyManager\LazyProxy\PhpDumper\ProxyDumper')
-        ) {
-            $dumper->setProxyDumper(new ProxyDumper(md5($cache->getPath())));
-        }
-
-        $content = $dumper->dump(array('class' => $class, 'base_class' => $baseClass, 'file' => $cache->getPath()));
-        $cache->write($content, $container->getResources());
-
-        // we should not use parent::stripComments method to cleanup source code from the comments to avoid
-        // memory leaks what generate token_get_all function.
-        if (!$this->debug) {
-            $cache->write(php_strip_whitespace($cache->getPath()), $container->getResources());
-        }
-    }
+//    /**
+//     * {@inheritdoc}
+//     */
+//    protected function dumpContainer(ConfigCache $cache, ContainerBuilder $container, $class, $baseClass)
+//    {
+//        // cache the container
+//        $dumper = new PhpDumper($container);
+//
+//        if ($container->getParameter('installed')
+//            && class_exists('ProxyManager\Configuration')
+//            && class_exists('Symfony\Bridge\ProxyManager\LazyProxy\PhpDumper\ProxyDumper')
+//        ) {
+//            $dumper->setProxyDumper(new ProxyDumper(md5($cache->getPath())));
+//        }
+//
+//        $content = $dumper->dump(array('class' => $class, 'base_class' => $baseClass, 'file' => $cache->getPath()));
+//        $cache->write($content, $container->getResources());
+//
+//        // we should not use parent::stripComments method to cleanup source code from the comments to avoid
+//        // memory leaks what generate token_get_all function.
+//        if (!$this->debug) {
+//            $cache->write(php_strip_whitespace($cache->getPath()), $container->getResources());
+//        }
+//    }
 
     /**
      * Add custom error handler

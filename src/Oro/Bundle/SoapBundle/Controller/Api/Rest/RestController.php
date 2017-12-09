@@ -7,7 +7,7 @@ use Doctrine\ORM\EntityNotFoundException;
 use FOS\RestBundle\Util\Codes;
 
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Util\ClassUtils;
+use Symfony\Component\Security\Acl\Util\ClassUtils;
 
 use Oro\Bundle\SoapBundle\Controller\Api\FormAwareInterface;
 use Oro\Bundle\SoapBundle\Controller\Api\FormHandlerAwareInterface;

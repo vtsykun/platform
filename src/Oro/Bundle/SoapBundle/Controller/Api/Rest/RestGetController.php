@@ -301,7 +301,7 @@ abstract class RestGetController extends FOSRestController implements EntityMana
     {
         if (false === preg_match_all(
             '#(?P<name>[\w\d_-]+)(?P<operator>(<|>|%3C|%3E)?=|<>|%3C%3E|(<|>|%3C|%3E))(?P<value>[^&]+)#',
-            $this->getRequest()->getQueryString(),
+            $this->get('request_stack')->getCurrentRequest()->getQueryString(),
             $matches,
             PREG_SET_ORDER
         )) {

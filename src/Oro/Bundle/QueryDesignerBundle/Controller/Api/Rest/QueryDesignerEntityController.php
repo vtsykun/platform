@@ -45,7 +45,7 @@ class QueryDesignerEntityController extends FOSRestController implements ClassRe
     {
         /** @var EntityWithFieldsProvider $provider */
         $provider = $this->get('oro_query_designer.entity_field_list_provider');
-        $withRelations = filter_var($this->getRequest()->get('with-relations', true), FILTER_VALIDATE_BOOLEAN);
+        $withRelations = filter_var($this->get('request_stack')->getCurrentRequest()->get('with-relations', true), FILTER_VALIDATE_BOOLEAN);
         $statusCode = Codes::HTTP_OK;
 
         try {

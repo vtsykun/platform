@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 
 use Oro\Bundle\SoapBundle\Controller\Api\FormAwareInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class ApiFormHandler implements FormAwareInterface
 {

@@ -58,7 +58,7 @@ class ConfigEntityGridController extends Controller
             ]
         );
 
-        $request = $this->getRequest();
+        $request = $this->get('request_stack')->getCurrentRequest();
         if ($request->getMethod() == 'POST') {
             $form->submit($request);
 
@@ -91,7 +91,7 @@ class ConfigEntityGridController extends Controller
      */
     public function createAction()
     {
-        $request = $this->getRequest();
+        $request = $this->get('request_stack')->getCurrentRequest();
 
         /** @var ConfigManager $configManager */
         $configManager = $this->get('oro_entity_config.config_manager');

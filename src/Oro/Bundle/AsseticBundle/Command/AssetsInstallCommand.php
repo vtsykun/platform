@@ -11,6 +11,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use Oro\Bundle\AsseticBundle\Command\Proxy\ContainerProxy;
 use Oro\Bundle\AsseticBundle\Command\Proxy\KernelProxy;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 
 /**
  * Extends Symfony 'assets:install' with '--exclude' option
@@ -44,14 +46,34 @@ class AssetsInstallCommand extends BaseAssetsInstallCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $excludeBundles = $input->getOption('exclude');
+        /** @var ContainerProxy $containerProxy */
+        $containerProxy = $this->getContainer();
+
         if (!empty($excludeBundles)) {
-            /** @var ContainerProxy $containerProxy */
-            $containerProxy = $this->getContainer();
             $kernelProxy = new KernelProxy($containerProxy->get('kernel'));
             foreach ($excludeBundles as $bundleName) {
                 $kernelProxy->excludeBundle($bundleName);
             }
             $containerProxy->replace('kernel', $kernelProxy);
+        }
+
+
+        $proxyFileSystem = new class () extends Filesystem {
+            public function remove($files)
+            {
+                //todo: Remove it https://github.com/symfony/symfony/pull/24216
+                if ($files instanceof Finder) {
+                    $files->exclude(['components', 'bowerassets', 'npmassets']);
+                }
+
+                parent::remove($files);
+            }
+        };
+        $containerProxy->replace('filesystem', $proxyFileSystem);
+        $prop = new \ReflectionProperty(BaseAssetsInstallCommand::class, 'filesystem');
+        $prop->setAccessible(true);
+        if ($prop->getValue($this)) {
+            $prop->setValue($proxyFileSystem);
         }
 
         $defaultWebDirectory = $this->getContainer()->getParameter('kernel.root_dir') .

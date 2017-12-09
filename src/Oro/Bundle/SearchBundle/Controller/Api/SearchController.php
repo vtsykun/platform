@@ -35,10 +35,10 @@ class SearchController extends FOSRestController
     public function getAction()
     {
         $searchResults = $this->get('oro_search.index')->simpleSearch(
-            $this->getRequest()->get('search'),
-            (int) $this->getRequest()->get('offset'),
-            (int) $this->getRequest()->get('max_results'),
-            $this->getRequest()->get('from')
+            $this->get('request_stack')->getCurrentRequest()->get('search'),
+            (int) $this->get('request_stack')->getCurrentRequest()->get('offset'),
+            (int) $this->get('request_stack')->getCurrentRequest()->get('max_results'),
+            $this->get('request_stack')->getCurrentRequest()->get('from')
         );
 
         $dispatcher = $this->get('event_dispatcher');

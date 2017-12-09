@@ -123,16 +123,6 @@ services:
         tags:
             - { name: oro_service_link, service: oro_entity.orm.entity_class_resolver }
 
-    security.context.link:
-        deprecated: The "%service_id%" service is deprecated since 2.3.
-        tags:
-            - { name: oro_service_link,  service: security.context }
-
-    oro_security.security_facade.link:
-        deprecated: The "%service_id%" service is deprecated since 2.3.
-        tags:
-            - { name: oro_service_link,  service: oro_security.security_facade }
-
     oro_security.acl.base_manager:
         class: %oro_security.acl.base_manager.class%
 
@@ -646,11 +636,11 @@ services:
             - { name: kernel.event_listener, event: console.command, method: onConsoleCommand, priority: 250 }
 
     oro_security.form.extension.aclprotected_type:
-        class: %oro_security.form.extension.aclprotected_type.class%
+        class: '%oro_security.form.extension.aclprotected_type.class%'
         arguments:
             - '@oro_security.acl_helper'
         tags:
-            - { name: form.type_extension, alias: entity }
+            - { name: form.type_extension, alias: entity, extended_type: 'Symfony\Bridge\Doctrine\Form\Type\EntityType' }
 
     oro_security.listener.search_listener:
           class: %oro_security.listener.search_listener.class%
@@ -690,13 +680,13 @@ services:
         class: %oro_security.configuration.provider.permission_configuration.class%
         arguments:
             - '@oro_security.configuration.permission_list_configuration'
-            - %kernel.bundles%
+            - '%kernel.bundles%'
 
     oro_security.configuration.provider.configurable_permission_configuration:
         class: 'Oro\Bundle\SecurityBundle\Configuration\ConfigurablePermissionConfigurationProvider'
         arguments:
             - '@oro_security.configurable_configuration.permission_list_configuration'
-            - %kernel.bundles%
+            - '%kernel.bundles%'
 
     oro_security.configuration.builder.permission_configuration:
         class: %oro_security.configuration.builder.permission_configuration.class%

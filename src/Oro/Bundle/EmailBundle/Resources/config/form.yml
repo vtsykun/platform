@@ -67,16 +67,15 @@ services:
             - { name: form.type, alias: oro_email_autoresponse_template_choice }
 
     oro_email.form.extension.mailbox_unbound_rules:
-        class: %oro_email.form.extension.mailbox_unbound_rules.class%
+        class: '%oro_email.form.extension.mailbox_unbound_rules.class%'
         arguments:
             - '@doctrine'
         tags:
-            - { name: form.type_extension, alias: oro_email_mailbox }
+            - { name: form.type_extension, alias: oro_email_mailbox, extended_type: 'Oro\Bundle\EmailBundle\Form\Type\MailboxType' }
 
     oro_email.form.emailtemplate:
         class: Symfony\Component\Form\Form
-        factory_method: createNamed
-        factory_service: form.factory
+        factory: ['@form.factory', createNamed]
         arguments: ["oro_email_emailtemplate", "oro_email_emailtemplate", null]
 
     oro_email.form.type.emailtemplate:
@@ -112,29 +111,26 @@ services:
             - { name: form.type, alias: oro_email_system_template_list }
 
     oro_email.form.handler.emailtemplate:
-        class: %oro_email.form.handler.emailtemplate.class%
-        scope: request
+        class: '%oro_email.form.handler.emailtemplate.class%'
         arguments:
             - '@oro_email.form.emailtemplate'
-            - '@request'
+            - '@request_stack'
             - '@doctrine.orm.entity_manager'
             - '@translator'
         calls:
-            - [setDefaultLocale, [%stof_doctrine_extensions.default_locale%]]
+            - [setDefaultLocale, ['%stof_doctrine_extensions.default_locale%']]
 
     oro_email.form.handler.email:
-        class: %oro_email.form.handler.email.class%
-        scope: request
+        class: '%oro_email.form.handler.email.class%'
         arguments:
             - '@oro_email.form.email'
-            - '@request'
+            - '@request_stack'
             - '@oro_email.mailer.processor'
             - '@logger'
 
     oro_email.form.email:
         class: Symfony\Component\Form\Form
-        factory_method: createNamed
-        factory_service: form.factory
+        factory: ['@form.factory', createNamed]
         arguments: ["oro_email_email", "oro_email_email", null]
 
     oro_email.form.type.email:
@@ -149,11 +145,10 @@ services:
             - { name: form.type, alias: oro_email_email }
 
     oro_email.form.handler.email.api:
-        class: %oro_email.form.handler.email.api.class%
-        scope: request
+        class: '%oro_email.form.handler.email.api.class%'
         arguments:
             - '@oro_email.form.email.api'
-            - '@request'
+            - '@request_stack'
             - '@doctrine.orm.entity_manager'
             - "@oro_email.email.entity.builder="
             - '@oro_security.token_accessor'
@@ -163,8 +158,7 @@ services:
 
     oro_email.form.email.api:
         class: Symfony\Component\Form\Form
-        factory_method: createNamed
-        factory_service: form.factory
+        factory: ['@form.factory', createNamed]
         arguments:
             - ~
             - 'oro_email_email_api'
@@ -222,11 +216,10 @@ services:
             - { name: form.type, alias: oro_email_mailbox }
 
     oro_email.form.handler.mailbox:
-        class: %oro_email.form.handler.mailbox.class%
-        scope: request
+        class: '%oro_email.form.handler.mailbox.class%'
         arguments:
             - '@form.factory'
-            - '@request'
+            - '@request_stack'
             - '@doctrine'
             - '@oro_email.mailbox.process_storage'
             - '@event_dispatcher'

@@ -235,7 +235,7 @@ services:
     oro_form.extension.js_validation.repeated:
         class: %oro_form.extension.js_validation.repeated.class%
         tags:
-            - { name: form.type_extension, alias: repeated }
+            - { name: form.type_extension, extended_type: 'Symfony\Component\Form\Extension\Core\Type\RepeatedType' }
 
     oro_form.extension.additional_attr:
         class: %oro_form.extension.additional_attr.class%
@@ -311,22 +311,19 @@ services:
         class: %oro_form.type.download_links.class%
         arguments:
             - '@assets.packages'
-        scope: request
         tags:
             - { name: form.type, alias: oro_download_links_type }
 
     oro_form.type.api:
-        class: %oro_form.type.api.class%
+        class: '%oro_form.type.api.class%'
         abstract: true
-        tags:
-            - { name: form.type, alias: oro_api_type }
 
-    oro_form.form_handler.api:
-        class: %oro_form.form_handler.api.class%
-        scope: request
-        arguments:
-            - '@request'
-            - '@doctrine.orm.entity_manager'
+#    oro_form.form_handler.api:
+#        class: %oro_form.form_handler.api.class%
+#        scope: request
+#        arguments:
+#            - '@request'
+#            - '@doctrine.orm.entity_manager'
 
     oro_form.validator.entity_class:
         class: %oro_form.validator.entity_class.class%

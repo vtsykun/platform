@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 
 use Oro\Bundle\TagBundle\Entity\Tag;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class TagHandler
 {
@@ -17,9 +18,9 @@ class TagHandler
     protected $form;
 
     /**
-     * @var Request
+     * @var RequestStack
      */
-    protected $request;
+    protected $requestStack;
 
     /**
      * @var ObjectManager
@@ -28,13 +29,13 @@ class TagHandler
 
     /**
      * @param FormInterface $form
-     * @param Request       $request
+     * @param RequestStack       $request
      * @param ObjectManager $manager
      */
-    public function __construct(FormInterface $form, Request $request, ObjectManager $manager)
+    public function __construct(FormInterface $form, RequestStack $request, ObjectManager $manager)
     {
         $this->form    = $form;
-        $this->request = $request;
+        $this->requestStack = $request;
         $this->manager = $manager;
     }
 
@@ -46,10 +47,11 @@ class TagHandler
      */
     public function process(Tag $entity)
     {
+        $request = $this->requestStack->getCurrentRequest();
         $this->form->setData($entity);
 
-        if (in_array($this->request->getMethod(), array('POST', 'PUT'))) {
-            $this->form->submit($this->request);
+        if (in_array($request->getMethod(), array('POST', 'PUT'))) {
+            $this->form->submit($request);
 
             if ($this->form->isValid()) {
                 $this->manager->persist($entity);

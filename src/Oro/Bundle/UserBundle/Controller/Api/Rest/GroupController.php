@@ -43,8 +43,8 @@ class GroupController extends RestController implements ClassResourceInterface
      */
     public function cgetAction()
     {
-        $page = (int) $this->getRequest()->get('page', 1);
-        $limit = (int) $this->getRequest()->get('limit', self::ITEMS_PER_PAGE);
+        $page = (int) $this->get('request_stack')->getCurrentRequest()->get('page', 1);
+        $limit = (int) $this->get('request_stack')->getCurrentRequest()->get('limit', self::ITEMS_PER_PAGE);
 
         return $this->handleGetListRequest($page, $limit);
     }

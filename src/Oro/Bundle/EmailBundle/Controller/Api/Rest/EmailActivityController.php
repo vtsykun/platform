@@ -133,8 +133,8 @@ class EmailActivityController extends RestGetController
             return $this->buildResponse('', self::ACTION_READ, ['result' => null], Codes::HTTP_NOT_FOUND);
         }
 
-        $page     = (int)$this->getRequest()->get('page', 1);
-        $limit    = (int)$this->getRequest()->get('limit', self::ITEMS_PER_PAGE);
+        $page     = (int)$this->get('request_stack')->getCurrentRequest()->get('page', 1);
+        $limit    = (int)$this->get('request_stack')->getCurrentRequest()->get('limit', self::ITEMS_PER_PAGE);
         $criteria = $this->buildFilterCriteria(['id' => ['=', $emailId]]);
 
         return $this->handleGetListRequest($page, $limit, $criteria);

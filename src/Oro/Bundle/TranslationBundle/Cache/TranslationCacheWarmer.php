@@ -3,11 +3,13 @@
 namespace Oro\Bundle\TranslationBundle\Cache;
 
 use Symfony\Bundle\FrameworkBundle\CacheWarmer\TranslationsCacheWarmer;
+use Symfony\Component\DependencyInjection\ServiceSubscriberInterface;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
 use Oro\Bundle\TranslationBundle\Strategy\TranslationStrategyProvider;
+use Symfony\Component\Translation\TranslatorInterface;
 
-class TranslationCacheWarmer implements CacheWarmerInterface
+class TranslationCacheWarmer implements CacheWarmerInterface, ServiceSubscriberInterface
 {
     /**
      * @var TranslationsCacheWarmer
@@ -20,7 +22,7 @@ class TranslationCacheWarmer implements CacheWarmerInterface
     protected $strategyProvider;
 
     /**
-     * @param TranslationsCacheWarmer $innerWarmer
+     * @param TranslationsCacheWarmer|ServiceSubscriberInterface $innerWarmer
      * @param TranslationStrategyProvider $strategyProvider
      */
     public function __construct(TranslationsCacheWarmer $innerWarmer, TranslationStrategyProvider $strategyProvider)
@@ -48,5 +50,15 @@ class TranslationCacheWarmer implements CacheWarmerInterface
     public function isOptional()
     {
         return $this->innerWarmer->isOptional();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedServices()
+    {
+        return [
+            'translator' => TranslatorInterface::class,
+        ];
     }
 }

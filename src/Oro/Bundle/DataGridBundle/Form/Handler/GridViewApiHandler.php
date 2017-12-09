@@ -6,6 +6,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 use Oro\Bundle\DataGridBundle\Entity\AbstractGridView;
@@ -16,8 +17,8 @@ class GridViewApiHandler
     /** @var FormInterface */
     protected $form;
 
-    /** @var Request */
-    protected $request;
+    /** @var RequestStack */
+    protected $requestStack;
 
     /** @var Registry */
     protected $registry;
@@ -30,20 +31,20 @@ class GridViewApiHandler
 
     /**
      * @param FormInterface         $form
-     * @param Request               $request
+     * @param RequestStack          $request
      * @param Registry              $registry
      * @param GridViewManager       $gridViewManager
      * @param TokenStorageInterface $tokenStorage
      */
     public function __construct(
         FormInterface $form,
-        Request $request,
+        RequestStack $request,
         Registry $registry,
         GridViewManager $gridViewManager,
         TokenStorageInterface $tokenStorage
     ) {
         $this->form            = $form;
-        $this->request         = $request;
+        $this->requestStack    = $request;
         $this->registry        = $registry;
         $this->gridViewManager = $gridViewManager;
         $this->tokenStorage    = $tokenStorage;
@@ -61,8 +62,9 @@ class GridViewApiHandler
         $entity->setColumnsData();
 
         $this->form->setData($entity);
-        if (in_array($this->request->getMethod(), ['POST', 'PUT'])) {
-            $data = $this->request->request->all();
+        $request = $this->requestStack->getCurrentRequest();
+        if (in_array($request->getMethod(), ['POST', 'PUT'])) {
+            $data = $request->request->all();
             unset($data['name']);
             if ($this->form->has('owner')) {
                 $data['owner'] = $entity->getOwner();

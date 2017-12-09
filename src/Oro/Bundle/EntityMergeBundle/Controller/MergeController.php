@@ -37,7 +37,7 @@ class MergeController extends Controller
         /** @var MassActionDispatcher $massActionDispatcher */
         $massActionDispatcher = $this->get('oro_datagrid.mass_action.dispatcher');
 
-        $response = $massActionDispatcher->dispatchByRequest($gridName, $actionName, $this->getRequest());
+        $response = $massActionDispatcher->dispatchByRequest($gridName, $actionName, $this->get('request_stack')->getCurrentRequest());
 
         $entityData = $this->getEntityDataFactory()->createEntityData(
             $response->getOption('entity_name'),
@@ -60,8 +60,8 @@ class MergeController extends Controller
     public function mergeAction(EntityData $entityData = null)
     {
         if (!$entityData) {
-            $className = $this->getRequest()->get('className');
-            $ids = (array)$this->getRequest()->get('ids');
+            $className = $this->get('request_stack')->getCurrentRequest()->get('className');
+            $ids = (array)$this->get('request_stack')->getCurrentRequest()->get('ids');
 
             $entityData = $this->getEntityDataFactory()->createEntityDataByIds($className, $ids);
         } else {
@@ -90,8 +90,8 @@ class MergeController extends Controller
             )
         );
 
-        if ($this->getRequest()->isMethod('POST')) {
-            $form->submit($this->getRequest());
+        if ($this->get('request_stack')->getCurrentRequest()->isMethod('POST')) {
+            $form->submit($this->get('request_stack')->getCurrentRequest());
             if ($form->isValid()) {
                 $merger = $this->getEntityMerger();
 

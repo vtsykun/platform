@@ -98,7 +98,7 @@ class ConfigController extends Controller
             ->getEntityManager()
             ->getRepository('Oro\Bundle\EntityConfigBundle\Entity\EntityConfigModel')
             ->find($id);
-        $request = $this->getRequest();
+        $request = $this->get('request_stack')->getCurrentRequest();
 
         $form = $this->createForm(
             'oro_entity_config_type',

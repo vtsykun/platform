@@ -5,7 +5,7 @@ namespace Oro\Bundle\EmailBundle\Provider;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
-use Symfony\Component\Security\Core\Util\ClassUtils;
+use Symfony\Component\Security\Acl\Util\ClassUtils;
 use Symfony\Component\Translation\TranslatorInterface;
 
 use Doctrine\Common\Cache\Cache;

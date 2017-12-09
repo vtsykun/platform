@@ -94,7 +94,7 @@ class AutoResponseRuleController extends Controller
     protected function update(AutoResponseRule $rule)
     {
         $form = $this->createForm(AutoResponseRuleType::NAME, $rule);
-        $form->handleRequest($this->getRequest());
+        $form->handleRequest($this->get('request_stack')->getCurrentRequest());
 
         if ($form->isValid()) {
             $em = $this->getAutoResponseRuleManager();

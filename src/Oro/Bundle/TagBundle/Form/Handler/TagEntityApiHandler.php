@@ -5,14 +5,14 @@ namespace Oro\Bundle\TagBundle\Form\Handler;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Persistence\ObjectManager;
 
+use Oro\Bundle\SoapBundle\Controller\Api\FormAwareInterface;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\Request;
 
 use Oro\Bundle\TagBundle\Entity\TagManager;
 use Oro\Bundle\TagBundle\Helper\TaggableHelper;
-use Oro\Bundle\SoapBundle\Form\Handler\ApiFormHandler;
+use Symfony\Component\HttpFoundation\RequestStack;
 
-class TagEntityApiHandler extends ApiFormHandler
+class TagEntityApiHandler implements FormAwareInterface
 {
     /** @var TagManager */
     protected $tagManager;
@@ -21,21 +21,37 @@ class TagEntityApiHandler extends ApiFormHandler
     protected $taggableHelper;
 
     /**
+     * @var FormInterface
+     */
+    protected $form;
+
+    /**
+     * @var RequestStack
+     */
+    protected $requestStack;
+
+    /**
+     * @var ObjectManager
+     */
+    protected $entityManager;
+
+    /**
      * @param FormInterface  $form
-     * @param Request        $request
+     * @param RequestStack        $request
      * @param ObjectManager  $entityManager
      * @param TagManager     $tagManager
      * @param TaggableHelper $helper
      */
     public function __construct(
         FormInterface $form,
-        Request $request,
+        RequestStack $request,
         ObjectManager $entityManager,
         TagManager $tagManager,
         TaggableHelper $helper
     ) {
-        parent::__construct($form, $request, $entityManager);
-
+        $this->requestStack = $request;
+        $this->entityManager = $entityManager;
+        $this->form = $form;
         $this->tagManager     = $tagManager;
         $this->taggableHelper = $helper;
     }
@@ -60,7 +76,17 @@ class TagEntityApiHandler extends ApiFormHandler
             throw new \LogicException('Target entity should be taggable.');
         }
 
-        return parent::process($entity);
+        $entity = $this->prepareFormData($entity);
+
+        $request = $this->requestStack->getCurrentRequest();
+        if (in_array($request->getMethod(), ['POST', 'PUT'], true)) {
+            $this->form->submit($request);
+            if ($this->form->isValid()) {
+                return $this->onSuccess($entity) ?: $entity;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -82,5 +108,14 @@ class TagEntityApiHandler extends ApiFormHandler
         $tags = $this->tagManager->loadOrCreateTags($names);
         $this->tagManager->setTags($targetEntity, new ArrayCollection($tags));
         $this->tagManager->saveTagging($targetEntity);
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getForm()
+    {
+        return $this->form;
     }
 }

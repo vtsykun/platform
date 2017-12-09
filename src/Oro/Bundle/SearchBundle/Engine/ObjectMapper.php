@@ -2,7 +2,7 @@
 
 namespace Oro\Bundle\SearchBundle\Engine;
 
-use Symfony\Component\Security\Core\Util\ClassUtils;
+use Symfony\Component\Security\Acl\Util\ClassUtils;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 use Oro\Bundle\SearchBundle\Query\Criteria\Criteria;

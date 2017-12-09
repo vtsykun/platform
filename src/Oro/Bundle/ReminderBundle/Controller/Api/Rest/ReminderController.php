@@ -29,7 +29,7 @@ class ReminderController extends FOSRestController implements ClassResourceInter
 
         $userId = $user->getId();
 
-        $reminders = $this->getReminderRepository()->findReminders($this->getRequest()->get('ids', []));
+        $reminders = $this->getReminderRepository()->findReminders($this->get('request_stack')->getCurrentRequest()->get('ids', []));
 
         /**
          * @var Reminder $reminder

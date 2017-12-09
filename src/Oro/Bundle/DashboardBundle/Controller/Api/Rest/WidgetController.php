@@ -68,11 +68,11 @@ class WidgetController extends FOSRestController implements ClassResourceInterfa
         }
 
         $widget->setExpanded(
-            $this->getRequest()->get('isExpanded', $widget->isExpanded())
+            $this->get('request_stack')->getCurrentRequest()->get('isExpanded', $widget->isExpanded())
         );
 
         $widget->setLayoutPosition(
-            $this->getRequest()->get('layoutPosition', $widget->getLayoutPosition())
+            $this->get('request_stack')->getCurrentRequest()->get('layoutPosition', $widget->getLayoutPosition())
         );
 
         $this->getEntityManager()->flush();
@@ -136,7 +136,7 @@ class WidgetController extends FOSRestController implements ClassResourceInterfa
             return $this->handleView($this->view(array(), Codes::HTTP_NOT_FOUND));
         }
 
-        $layoutPositions = $this->getRequest()->get('layoutPositions', []);
+        $layoutPositions = $this->get('request_stack')->getCurrentRequest()->get('layoutPositions', []);
 
         foreach ($layoutPositions as $widgetId => $layoutPosition) {
             if ($widget = $this->getDashboardManager()->findWidgetModel($widgetId)) {
@@ -171,9 +171,9 @@ class WidgetController extends FOSRestController implements ClassResourceInterfa
      */
     public function postAddWidgetAction()
     {
-        $dashboardId = $this->getRequest()->get('dashboardId');
-        $widgetName = $this->getRequest()->get('widgetName');
-        $targetColumn = (int)$this->getRequest()->get('targetColumn', 0);
+        $dashboardId = $this->get('request_stack')->getCurrentRequest()->get('dashboardId');
+        $widgetName = $this->get('request_stack')->getCurrentRequest()->get('widgetName');
+        $targetColumn = (int)$this->get('request_stack')->getCurrentRequest()->get('targetColumn', 0);
 
         $dashboard = $this->getDashboardManager()->findDashboardModel($dashboardId);
 

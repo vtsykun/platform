@@ -48,7 +48,7 @@ class FileController extends RestGetController implements ClassResourceInterface
         // @todo: It seems that it is a bug in FOS Rest Bundle
         // @todo: https://magecore.atlassian.net/browse/BAP-8352
         if ($_format) {
-            $this->getRequest()->setRequestFormat($_format);
+            $this->get('request_stack')->getCurrentRequest()->setRequestFormat($_format);
         }
 
         return $this->handleGetRequest($key);
@@ -73,7 +73,7 @@ class FileController extends RestGetController implements ClassResourceInterface
     protected function buildResponse($data, $action, $contextValues = [], $status = Codes::HTTP_OK)
     {
         if ($status === Codes::HTTP_OK) {
-            $format = $this->getRequest()->getRequestFormat();
+            $format = $this->get('request_stack')->getCurrentRequest()->getRequestFormat();
             if ($format === 'binary') {
                 if ($action !== self::ACTION_READ) {
                     throw new BadRequestHttpException('Only single file can be returned in the binary format');
@@ -125,7 +125,7 @@ class FileController extends RestGetController implements ClassResourceInterface
         );
 
         $includeHandler = $this->get('oro_soap.handler.include');
-        $includeHandler->handle(new Context($this, $this->getRequest(), $response, $action, $contextValues));
+        $includeHandler->handle(new Context($this, $this->get('request_stack')->getCurrentRequest(), $response, $action, $contextValues));
 
         return $response;
     }

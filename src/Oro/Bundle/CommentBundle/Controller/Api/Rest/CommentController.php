@@ -70,8 +70,8 @@ class CommentController extends RestController
      */
     public function cgetAction($relationClass, $relationId)
     {
-        $page             = $this->getRequest()->get('page', 1);
-        $limit            = $this->getRequest()->get('limit', self::ITEMS_PER_PAGE);
+        $page             = $this->get('request_stack')->getCurrentRequest()->get('page', 1);
+        $limit            = $this->get('request_stack')->getCurrentRequest()->get('limit', self::ITEMS_PER_PAGE);
         $dateParamFilter  = new HttpDateTimeParameterFilter();
         $filterParameters = ['createdAt' => $dateParamFilter, 'updatedAt' => $dateParamFilter];
         $filterCriteria   = $this->getFilterCriteria(['createdAt', 'updatedAt'], $filterParameters);

@@ -3,12 +3,13 @@
 namespace Oro\Bundle\EmailBundle\Form\Handler;
 
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
 
+use Oro\Bundle\SoapBundle\Controller\Api\FormAwareInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\Request;
 
 use Oro\Bundle\EmailBundle\Builder\EmailEntityBuilder;
 use Oro\Bundle\EmailBundle\Entity\Email;
@@ -22,13 +23,13 @@ use Oro\Bundle\EmailBundle\Event\EmailBodyAdded;
 use Oro\Bundle\EmailBundle\Form\Model\EmailApi as EmailModel;
 use Oro\Bundle\OrganizationBundle\Entity\OrganizationInterface;
 use Oro\Bundle\SecurityBundle\Authentication\TokenAccessorInterface;
-use Oro\Bundle\SoapBundle\Form\Handler\ApiFormHandler;
 use Oro\Bundle\UserBundle\Entity\User;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  */
-class EmailApiHandler extends ApiFormHandler
+class EmailApiHandler implements FormAwareInterface
 {
     /** @var EmailEntityBuilder */
     protected $emailEntityBuilder;
@@ -49,8 +50,23 @@ class EmailApiHandler extends ApiFormHandler
     protected $emailOrigin;
 
     /**
+     * @var FormInterface
+     */
+    protected $form;
+
+    /**
+     * @var RequestStack
+     */
+    protected $requestStack;
+
+    /**
+     * @var ObjectManager
+     */
+    protected $entityManager;
+
+    /**
      * @param FormInterface            $form
-     * @param Request                  $request
+     * @param RequestStack             $request
      * @param EntityManager            $entityManager
      * @param EmailEntityBuilder       $emailEntityBuilder
      * @param TokenAccessorInterface   $tokenAccessor
@@ -60,7 +76,7 @@ class EmailApiHandler extends ApiFormHandler
      */
     public function __construct(
         FormInterface $form,
-        Request $request,
+        RequestStack $request,
         EntityManager $entityManager,
         EmailEntityBuilder $emailEntityBuilder,
         TokenAccessorInterface $tokenAccessor,
@@ -68,7 +84,10 @@ class EmailApiHandler extends ApiFormHandler
         DataTransformerInterface $emailImportanceTransformer,
         DataTransformerInterface $emailBodyTypeTransformer
     ) {
-        parent::__construct($form, $request, $entityManager);
+
+        $this->requestStack = $request;
+        $this->entityManager = $entityManager;
+        $this->form = $form;
 
         $this->emailEntityBuilder = $emailEntityBuilder;
         $this->tokenAccessor = $tokenAccessor;
@@ -78,13 +97,39 @@ class EmailApiHandler extends ApiFormHandler
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getForm()
+    {
+        return $this->form;
+    }
+
+    /**
      * @param Email $entity
      *
      * @return EmailModel
      */
     protected function prepareFormData($entity)
     {
-        return parent::prepareFormData(new EmailModel($entity));
+        $entity = new EmailModel($entity);
+        $this->form->setData(new EmailModel($entity));
+
+        return $entity;
+    }
+
+    public function process($entity)
+    {
+        $entity = $this->prepareFormData($entity);
+        $request = $this->requestStack->getCurrentRequest();
+
+        if (in_array($request->getMethod(), ['POST', 'PUT'], true)) {
+            $this->form->submit($request);
+            if ($this->form->isValid()) {
+                return $this->onSuccess($entity) ?: $entity;
+            }
+        }
+
+        return null;
     }
 
     /**

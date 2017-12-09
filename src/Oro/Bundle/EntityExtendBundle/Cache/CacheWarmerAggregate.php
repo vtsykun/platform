@@ -9,16 +9,16 @@ use Oro\Component\DependencyInjection\ServiceLink;
 use Oro\Bundle\EntityBundle\Tools\CheckDatabaseStateManager;
 use Oro\Bundle\InstallerBundle\CommandExecutor;
 
-class CacheWarmerAggregate implements CacheWarmerInterface
+class CacheWarmerAggregate extends CacheWarmer implements CacheWarmerInterface
 {
     /** @var ServiceLink */
-    private $cacheWarmerLink;
+    protected $cacheWarmerLink;
 
     /** @var ServiceLink */
-    private $extendCacheWarmerLink;
+    protected $extendCacheWarmerLink;
 
     /** @var bool */
-    private $optionalsEnabled = false;
+    protected $optionalsEnabled = false;
 
     /**
      * @param ServiceLink               $cacheWarmerLink

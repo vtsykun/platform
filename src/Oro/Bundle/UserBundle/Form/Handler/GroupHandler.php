@@ -9,6 +9,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 use Oro\Bundle\UserBundle\Entity\User;
 use Oro\Bundle\UserBundle\Entity\Group;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class GroupHandler
 {
@@ -20,7 +21,7 @@ class GroupHandler
     /**
      * @var Request
      */
-    protected $request;
+    protected $requestStack;
 
     /**
      * @var ObjectManager
@@ -29,13 +30,13 @@ class GroupHandler
 
     /**
      * @param FormInterface $form
-     * @param Request       $request
+     * @param RequestStack       $request
      * @param ObjectManager $manager
      */
-    public function __construct(FormInterface $form, Request $request, ObjectManager $manager)
+    public function __construct(FormInterface $form, RequestStack $request, ObjectManager $manager)
     {
         $this->form    = $form;
-        $this->request = $request;
+        $this->requestStack = $request;
         $this->manager = $manager;
     }
 
@@ -48,9 +49,9 @@ class GroupHandler
     public function process(Group $entity)
     {
         $this->form->setData($entity);
-
-        if (in_array($this->request->getMethod(), array('POST', 'PUT'))) {
-            $this->form->submit($this->request);
+        $request = $this->requestStack->getCurrentRequest();
+        if (in_array($request->getMethod(), array('POST', 'PUT'))) {
+            $this->form->submit($request);
 
             if ($this->form->isValid()) {
                 $appendUsers = $this->form->get('appendUsers')->getData();

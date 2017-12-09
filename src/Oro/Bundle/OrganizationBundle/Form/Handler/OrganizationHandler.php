@@ -8,27 +8,28 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 use Oro\Bundle\OrganizationBundle\Entity\Organization;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class OrganizationHandler
 {
     /** @var FormInterface */
     protected $form;
 
-    /** @var Request */
-    protected $request;
+    /** @var RequestStack */
+    protected $requestStack;
 
     /** @var EntityManager */
     protected $manager;
 
     /**
      * @param FormInterface $form
-     * @param Request       $request
+     * @param RequestStack       $request
      * @param EntityManager $manager
      */
-    public function __construct(FormInterface $form, Request $request, EntityManager $manager)
+    public function __construct(FormInterface $form, RequestStack $request, EntityManager $manager)
     {
         $this->form    = $form;
-        $this->request = $request;
+        $this->requestStack = $request;
         $this->manager = $manager;
     }
 
@@ -41,9 +42,10 @@ class OrganizationHandler
     public function process(Organization $entity)
     {
         $this->form->setData($entity);
+        $request = $this->requestStack->getCurrentRequest();
 
-        if (in_array($this->request->getMethod(), array('POST', 'PUT'))) {
-            $this->form->submit($this->request);
+        if (in_array($request->getMethod(), array('POST', 'PUT'))) {
+            $this->form->submit($request);
             if ($this->form->isValid()) {
                 $this->onSuccess($entity);
                 return true;

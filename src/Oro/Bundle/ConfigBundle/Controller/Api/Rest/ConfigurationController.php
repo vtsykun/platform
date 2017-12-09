@@ -71,7 +71,7 @@ class ConfigurationController extends FOSRestController
         $manager = $this->get('oro_config.manager.api');
 
         try {
-            $data = $manager->getData($path, $this->getRequest()->get('scope', 'user'));
+            $data = $manager->getData($path, $this->get('request_stack')->getCurrentRequest()->get('scope', 'user'));
         } catch (ItemNotFoundException $e) {
             return $this->handleView($this->view(null, Codes::HTTP_NOT_FOUND));
         }

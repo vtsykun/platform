@@ -56,9 +56,9 @@ class EmailActivitySuggestionController extends RestGetController
      */
     public function cgetAction($id)
     {
-        $page  = (int)$this->getRequest()->get('page', 1);
-        $limit = (int)$this->getRequest()->get('limit', self::ITEMS_PER_PAGE);
-        $excludeCurrentUser = filter_var($this->getRequest()->get('exclude-current-user'), FILTER_VALIDATE_BOOLEAN);
+        $page  = (int)$this->get('request_stack')->getCurrentRequest()->get('page', 1);
+        $limit = (int)$this->get('request_stack')->getCurrentRequest()->get('limit', self::ITEMS_PER_PAGE);
+        $excludeCurrentUser = filter_var($this->get('request_stack')->getCurrentRequest()->get('exclude-current-user'), FILTER_VALIDATE_BOOLEAN);
 
         $data = $this->getManager()->getSuggestionResult($id, $page, $limit, $excludeCurrentUser);
 

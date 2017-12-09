@@ -2,7 +2,7 @@
 
 namespace Oro\Bundle\ActivityListBundle\Model\Strategy;
 
-use Symfony\Component\Security\Core\Util\ClassUtils;
+use Symfony\Component\Security\Acl\Util\ClassUtils;
 
 use Oro\Component\PhpUtils\ArrayUtil;
 

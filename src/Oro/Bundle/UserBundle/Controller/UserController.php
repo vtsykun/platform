@@ -210,7 +210,7 @@ class UserController extends Controller
         return array(
             'entity'      => $user,
             'userApi'     => $this->getUserApi($user),
-            'viewProfile' => (bool)$this->getRequest()->query->get('viewProfile', false)
+            'viewProfile' => (bool)$this->get('request_stack')->getCurrentRequest()->query->get('viewProfile', false)
         );
     }
 

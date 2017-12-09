@@ -235,7 +235,7 @@ services:
 
     oro_email.email.entity.builder:
         class: %oro_email.email.entity.builder.class%
-        scope: prototype
+        shared: false
         arguments:
             - '@oro_email.email.entity.batch_processor'
             - '@oro_email.email.address.manager'
@@ -269,7 +269,7 @@ services:
     oro_email.email.entity.batch_processor:
         class: %oro_email.email.entity.batch_processor.class%
         public: false
-        scope: prototype
+        shared: false
         arguments:
             - '@oro_email.email.address.manager'
             - '@oro_email.email.owner.provider'
@@ -592,7 +592,7 @@ services:
     oro_email.validator.mailbox_origin:
         class: Oro\Bundle\EmailBundle\Validator\MailboxOriginValidator
         arguments:
-            - @translator
+            - '@translator'
         tags:
             - { name: validator.constraint_validator, alias: oro_email.validator.mailbox_origin }
 
@@ -742,7 +742,7 @@ services:
     oro_email.known_email_address_checker_factory:
         class: %oro_email.known_email_address_checker_factory.class%
         public: false
-        scope: prototype
+        shared: false
         arguments:
             - '@doctrine'
             - '@oro_email.email.address.manager'

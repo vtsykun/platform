@@ -29,10 +29,10 @@ class SearchController extends Controller
      */
     public function ajaxAdvancedSearchAction()
     {
-        return $this->getRequest()->isXmlHttpRequest()
+        return $this->get('request_stack')->getCurrentRequest()->isXmlHttpRequest()
             ? new JsonResponse(
                 $this->get('oro_search.index')->advancedSearch(
-                    $this->getRequest()->get('query')
+                    $this->get('request_stack')->getCurrentRequest()->get('query')
                 )->toSearchResultData()
             )
             : $this->forward('OroSearchBundle:Search:searchResults');
@@ -49,8 +49,8 @@ class SearchController extends Controller
     {
         return array(
             'entities'     => $this->get('oro_search.index')->getAllowedEntitiesListAliases(),
-            'searchString' => $this->getRequest()->get('searchString'),
-            'fromString'   => $this->getRequest()->get('fromString'),
+            'searchString' => $this->get('request_stack')->getCurrentRequest()->get('searchString'),
+            'fromString'   => $this->get('request_stack')->getCurrentRequest()->get('fromString'),
         );
     }
 

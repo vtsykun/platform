@@ -3,20 +3,20 @@
 namespace Oro\Bundle\CommentBundle\Form\Handler;
 
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\Request;
 
 use Doctrine\Common\Persistence\ObjectManager;
 
 use Oro\Bundle\EntityConfigBundle\Config\ConfigManager;
 use Oro\Bundle\CommentBundle\Entity\Comment;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class CommentApiHandler
 {
     /** @var FormInterface */
     protected $form;
 
-    /** @var Request */
-    protected $request;
+    /** @var RequestStack */
+    protected $requestStack;
 
     /** @var ObjectManager */
     protected $manager;
@@ -26,18 +26,18 @@ class CommentApiHandler
 
     /**
      * @param FormInterface $form
-     * @param Request       $request
+     * @param RequestStack  $request
      * @param ObjectManager $manager
      * @param ConfigManager $configManager
      */
     public function __construct(
         FormInterface $form,
-        Request $request,
+        RequestStack $request,
         ObjectManager $manager,
         ConfigManager $configManager
     ) {
         $this->form          = $form;
-        $this->request       = $request;
+        $this->requestStack  = $request;
         $this->manager       = $manager;
         $this->configManager = $configManager;
     }
@@ -52,9 +52,10 @@ class CommentApiHandler
     public function process(Comment $entity)
     {
         $this->form->setData($entity);
+        $request = $this->requestStack->getCurrentRequest();
 
-        if (in_array($this->request->getMethod(), ['POST', 'PUT'])) {
-            $this->form->submit($this->request);
+        if (in_array($request, ['POST', 'PUT'])) {
+            $this->form->submit($request);
 
             if ($this->form->isValid()) {
                 $this->onSuccess($entity);

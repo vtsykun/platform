@@ -59,7 +59,7 @@ class MailboxUnboudRulesExtension extends AbstractTypeExtension
     }
 
     /**
-     * @return EntityManager
+     * @return EntityManager|\Doctrine\Common\Persistence\ObjectManager
      */
     protected function getAutoResponseRuleManager()
     {
@@ -71,6 +71,6 @@ class MailboxUnboudRulesExtension extends AbstractTypeExtension
      */
     public function getExtendedType()
     {
-        return 'oro_email_mailbox';
+        return 'Oro\Bundle\EmailBundle\Form\Type\MailboxType';
     }
 }

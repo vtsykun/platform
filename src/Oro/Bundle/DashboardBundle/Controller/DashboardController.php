@@ -184,7 +184,7 @@ class DashboardController extends Controller
             ]
         );
 
-        $request = $this->getRequest();
+        $request = $this->get('request_stack')->getCurrentRequest();
         if ($request->isMethod('POST')) {
             if ($form->submit($request)->isValid()) {
                 $this->getDashboardManager()->save($dashboardModel, true);
@@ -269,7 +269,7 @@ class DashboardController extends Controller
 
         $params = array_merge(
             [
-                'items' => $manager->getWidgetItemsData($widget, $this->getRequest()->query->get('_widgetId', null))
+                'items' => $manager->getWidgetItemsData($widget, $this->get('request_stack')->getCurrentRequest()->query->get('_widgetId', null))
             ],
             $manager->getWidgetAttributesForTwig($widget)
         );

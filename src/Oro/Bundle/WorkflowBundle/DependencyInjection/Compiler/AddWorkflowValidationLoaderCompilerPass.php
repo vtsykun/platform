@@ -8,7 +8,6 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class AddWorkflowValidationLoaderCompilerPass implements CompilerPassInterface
 {
-    const WORKFLOW_VALIDATION_LOADER_ID = 'oro_workflow.validation_loader';
 
     /**
      * @param ContainerBuilder $container
@@ -17,7 +16,7 @@ class AddWorkflowValidationLoaderCompilerPass implements CompilerPassInterface
     {
         if ($container->hasDefinition('validator.builder')) {
             $validatorBuilder = $container->getDefinition('validator.builder');
-            $validatorBuilder->addMethodCall('addCustomLoader', [new Reference(self::WORKFLOW_VALIDATION_LOADER_ID)]);
+            $validatorBuilder->addMethodCall('addCustomLoader', [new Reference('oro_workflow.validation_loader')]);
         }
     }
 }

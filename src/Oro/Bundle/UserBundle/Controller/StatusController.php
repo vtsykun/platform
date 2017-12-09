@@ -36,7 +36,7 @@ class StatusController extends Controller
             $result = true;
         }
 
-        if ($this->getRequest()->isXmlHttpRequest()) {
+        if ($this->get('request_stack')->getCurrentRequest()->isXmlHttpRequest()) {
             if (!$result) {
                 return $this->render(
                     'OroUserBundle:Status:statusForm.html.twig',

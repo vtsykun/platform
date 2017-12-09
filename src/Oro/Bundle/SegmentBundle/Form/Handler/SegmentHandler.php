@@ -9,6 +9,7 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 
 use Oro\Bundle\SegmentBundle\Entity\Manager\StaticSegmentManager;
 use Oro\Bundle\SegmentBundle\Entity\Segment;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class SegmentHandler
 {
@@ -18,9 +19,9 @@ class SegmentHandler
     protected $form;
 
     /**
-     * @var Request
+     * @var RequestStack
      */
-    protected $request;
+    protected $requestStack;
 
     /**
      * @var ManagerRegistry
@@ -34,18 +35,18 @@ class SegmentHandler
 
     /**
      * @param FormInterface $form
-     * @param Request $request
+     * @param RequestStack $request
      * @param ManagerRegistry $managerRegistry
      * @param StaticSegmentManager $staticSegmentManager
      */
     public function __construct(
         FormInterface $form,
-        Request $request,
+        RequestStack $request,
         ManagerRegistry $managerRegistry,
         StaticSegmentManager $staticSegmentManager
     ) {
         $this->form = $form;
-        $this->request = $request;
+        $this->requestStack = $request;
         $this->managerRegistry = $managerRegistry;
         $this->staticSegmentManager = $staticSegmentManager;
     }
@@ -58,10 +59,11 @@ class SegmentHandler
      */
     public function process(Segment $entity)
     {
+        $request = $this->requestStack->getCurrentRequest();
         $this->form->setData($entity);
 
-        if (in_array($this->request->getMethod(), ['POST', 'PUT'])) {
-            $this->form->submit($this->request);
+        if (in_array($request->getMethod(), ['POST', 'PUT'])) {
+            $this->form->submit($request);
 
             if ($this->form->isValid()) {
                 $this->onSuccess($entity);

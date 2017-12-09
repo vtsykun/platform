@@ -53,7 +53,7 @@ class NoteController extends Controller
     {
         $entityClass = $this->getEntityRoutingHelper()->resolveEntityClass($entityClass);
 
-        $sorting = strtoupper($this->getRequest()->get('sorting', 'DESC'));
+        $sorting = strtoupper($this->get('request_stack')->getCurrentRequest()->get('sorting', 'DESC'));
 
         $manager = $this->getNoteManager();
 
@@ -95,8 +95,8 @@ class NoteController extends Controller
     protected function getTargetEntity()
     {
         $entityRoutingHelper = $this->getEntityRoutingHelper();
-        $targetEntityClass   = $entityRoutingHelper->getEntityClassName($this->getRequest(), 'targetActivityClass');
-        $targetEntityId      = $entityRoutingHelper->getEntityId($this->getRequest(), 'targetActivityId');
+        $targetEntityClass   = $entityRoutingHelper->getEntityClassName($this->get('request_stack')->getCurrentRequest(), 'targetActivityClass');
+        $targetEntityId      = $entityRoutingHelper->getEntityId($this->get('request_stack')->getCurrentRequest(), 'targetActivityId');
         if (!$targetEntityClass || !$targetEntityId) {
             return null;
         }
@@ -121,7 +121,7 @@ class NoteController extends Controller
 
         $formAction = $entityRoutingHelper->generateUrlByRequest(
             'oro_note_create',
-            $this->getRequest(),
+            $this->get('request_stack')->getCurrentRequest(),
             $entityRoutingHelper->getRouteParameters($entityClass, $entityId)
         );
 

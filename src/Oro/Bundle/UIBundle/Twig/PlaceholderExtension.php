@@ -7,6 +7,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 use Oro\Bundle\UIBundle\Placeholder\PlaceholderProvider;
+use Symfony\Component\HttpKernel\Controller\ControllerReference;
 
 class PlaceholderExtension extends \Twig_Extension
 {
@@ -115,7 +116,7 @@ class PlaceholderExtension extends \Twig_Extension
             /** @var HttpKernelExtension $kernelExtension */
             $kernelExtension = $environment->getExtension(HttpKernelExtension::class);
 
-            return $kernelExtension->renderFragment(
+            return $this->renderFragment(
                 $kernelExtension->controller($item['action'], $variables, $query)
             );
         }
@@ -126,6 +127,26 @@ class PlaceholderExtension extends \Twig_Extension
                 implode('", "', $item)
             )
         );
+    }
+
+    /**
+     * Renders a fragment.
+     *
+     * @param string|ControllerReference $uri     A URI as a string or a ControllerReference instance
+     * @param array                      $options An array of options
+     *
+     * @return string The fragment content
+     *
+     * @see FragmentHandler::render()
+     */
+    private function renderFragment($uri, $options = array())
+    {
+        $strategy = isset($options['strategy']) ? $options['strategy'] : 'inline';
+        unset($options['strategy']);
+
+        $handler = $this->container->get('fragment.handler');
+
+        return $handler->render($uri, $strategy, $options);
     }
 
     /**

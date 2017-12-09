@@ -9,6 +9,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 use Oro\Bundle\UserBundle\Entity\User;
 use Oro\Bundle\UserBundle\Entity\Role;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * TODO: Remove this class after api for acl is ready
@@ -21,9 +22,9 @@ class RoleHandler
     protected $form;
 
     /**
-     * @var Request
+     * @var RequestStack
      */
-    protected $request;
+    protected $requestStack;
 
     /**
      * @var ObjectManager
@@ -32,13 +33,13 @@ class RoleHandler
 
     /**
      * @param FormInterface $form
-     * @param Request       $request
+     * @param RequestStack       $request
      * @param ObjectManager $manager
      */
-    public function __construct(FormInterface $form, Request $request, ObjectManager $manager)
+    public function __construct(FormInterface $form, RequestStack $request, ObjectManager $manager)
     {
         $this->form    = $form;
-        $this->request = $request;
+        $this->requestStack = $request;
         $this->manager = $manager;
     }
 
@@ -52,8 +53,9 @@ class RoleHandler
     {
         $this->form->setData($entity);
 
-        if (in_array($this->request->getMethod(), array('POST', 'PUT'))) {
-            $this->form->submit($this->request);
+        $request = $this->requestStack->getCurrentRequest();
+        if (in_array($request->getMethod(), array('POST', 'PUT'))) {
+            $this->form->submit($request);
 
             if ($this->form->isValid()) {
                 $appendUsers = $this->form->get('appendUsers')->getData();

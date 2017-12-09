@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 use Oro\Bundle\ActivityBundle\Manager\ActivityManager;
 use Oro\Bundle\NoteBundle\Entity\Note;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class NoteHandler
 {
@@ -19,9 +20,9 @@ class NoteHandler
     protected $form;
 
     /**
-     * @var Request
+     * @var RequestStack
      */
-    protected $request;
+    protected $requestStack;
 
     /**
      * @var ManagerRegistry
@@ -35,18 +36,18 @@ class NoteHandler
 
     /**
      * @param FormInterface   $form
-     * @param Request         $request
+     * @param RequestStack         $request
      * @param ManagerRegistry $managerRegistry
      * @param ActivityManager $activityManager
      */
     public function __construct(
         FormInterface $form,
-        Request $request,
+        RequestStack $request,
         ManagerRegistry $managerRegistry,
         ActivityManager $activityManager
     ) {
         $this->form = $form;
-        $this->request = $request;
+        $this->requestStack = $request;
         $this->managerRegistry = $managerRegistry;
         $this->activityManager = $activityManager;
     }
@@ -60,10 +61,11 @@ class NoteHandler
      */
     public function process(Note $entity)
     {
+        $request = $this->requestStack->getCurrentRequest();
         $this->form->setData($entity);
 
-        if (in_array($this->request->getMethod(), array('POST', 'PUT'))) {
-            $this->form->submit($this->request);
+        if (in_array($request->getMethod(), array('POST', 'PUT'))) {
+            $this->form->submit($request);
 
             if ($this->form->isValid()) {
                 $this->onSuccess($entity);

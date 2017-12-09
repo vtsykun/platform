@@ -62,7 +62,7 @@ class NavigationItemController extends FOSRestController
      */
     public function postAction($type)
     {
-        $params = $this->getRequest()->request->all();
+        $params = $this->get('request_stack')->getCurrentRequest()->request->all();
 
         if (empty($params) || empty($params['type'])) {
             return $this->handleView(
@@ -108,7 +108,7 @@ class NavigationItemController extends FOSRestController
      */
     public function putIdAction($type, $itemId)
     {
-        $params = $this->getRequest()->request->all();
+        $params = $this->get('request_stack')->getCurrentRequest()->request->all();
 
         if (empty($params)) {
             return $this->handleView(

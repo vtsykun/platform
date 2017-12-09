@@ -177,8 +177,8 @@ services:
             - { name: kernel.event_listener, event: oro.entity_merge.build_metadata, method: onBuildMetadata }
 
     oro_attachment.datagrid.action.dialog:
-        class: %oro_attachment.datagrid.action.dialog.class%
-        scope: prototype
+        class: '%oro_attachment.datagrid.action.dialog.class%'
+        shared: false
         tags:
             - { name: oro_datagrid.extension.action.type, type: dialog }
 

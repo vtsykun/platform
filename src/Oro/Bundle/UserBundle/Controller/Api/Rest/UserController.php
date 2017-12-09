@@ -65,8 +65,8 @@ class UserController extends RestController implements ClassResourceInterface
      */
     public function cgetAction()
     {
-        $page  = (int) $this->getRequest()->get('page', 1);
-        $limit = (int) $this->getRequest()->get('limit', self::ITEMS_PER_PAGE);
+        $page  = (int) $this->get('request_stack')->getCurrentRequest()->get('page', 1);
+        $limit = (int) $this->get('request_stack')->getCurrentRequest()->get('limit', self::ITEMS_PER_PAGE);
 
         $criteria = $this->getFilterCriteria($this->getSupportedQueryParameters(__FUNCTION__));
 
@@ -236,7 +236,7 @@ class UserController extends RestController implements ClassResourceInterface
     public function getFilterAction()
     {
         $params = array_intersect_key(
-            $this->getRequest()->query->all(),
+            $this->get('request_stack')->getCurrentRequest()->query->all(),
             array_flip($this->getSupportedQueryParameters(__FUNCTION__))
         );
 
@@ -342,7 +342,7 @@ class UserController extends RestController implements ClassResourceInterface
         //todo: Add user avatar to api
         /*$result['imagePath'] = null;
         if (isset($result['image'])) {
-            $result['imagePath'] = $this->getRequest()->getBasePath() . '/' . $entity->getImagePath();
+            $result['imagePath'] = $this->get('request_stack')->getCurrentRequest()->getBasePath() . '/' . $entity->getImagePath();
         }
         unset($result['image']);*/
 

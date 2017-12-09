@@ -245,7 +245,7 @@ class ResetController extends Controller
 
         $formAction = $entityRoutingHelper->generateUrlByRequest(
             'oro_user_reset_set_password',
-            $this->getRequest(),
+            $this->get('request_stack')->getCurrentRequest(),
             ['id' => $entity->getId()]
         );
 

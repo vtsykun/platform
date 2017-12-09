@@ -29,64 +29,13 @@ class ExtendedContainerBuilder extends ContainerBuilder
     }
 
     /**
-     * Changes a priority of a compiler pass
-     *
-     * @param string $passClassName       The class name of a compiler pass to be moved
-     * @param string $targetPassClassName The class name of a target compiler pass
-     * @param string $type                The type of compiler pass
+     * @deprecated
      */
-    public function moveCompilerPassBefore(
-        $passClassName,
-        $targetPassClassName,
-        $type = PassConfig::TYPE_BEFORE_OPTIMIZATION
-    ) {
+    public function moveCompilerPassBefore()
+    {
         $passConfig = $this->getCompilerPassConfig();
-
-        $propName = $type . 'Passes';
-        $class    = new \ReflectionClass($passConfig);
-        if (!$class->hasProperty($propName)) {
-            throw new InvalidArgumentException(sprintf('Invalid compiler pass type "%s".', $type));
-        }
-        $prop = $class->getProperty($propName);
-        $prop->setAccessible(true);
-        $passes = $prop->getValue($passConfig);
-
-        $resultPasses    = [];
-        $srcPass         = null;
-        $targetPassIndex = -1;
-        foreach ($passes as $i => $pass) {
-            switch (get_class($pass)) {
-                case $passClassName:
-                    $srcPass = $pass;
-                    break;
-                case $targetPassClassName:
-                    if (null !== $srcPass) {
-                        // the source pass is already located before the target pass
-                        $resultPasses = null;
-                        break 2;
-                    }
-                    // in case if several instances of the target pass exist
-                    // the source pass should be located before the first instance of the target pass
-                    if (-1 === $targetPassIndex) {
-                        $targetPassIndex = count($resultPasses);
-                        $resultPasses[]  = null;
-                    }
-                    $resultPasses[] = $pass;
-                    break;
-                default:
-                    $resultPasses[] = $pass;
-                    break;
-            }
-        }
-        if (null !== $resultPasses) {
-            if (null === $srcPass) {
-                throw new InvalidArgumentException(sprintf('Unknown compiler pass "%s".', $passClassName));
-            }
-            if (-1 === $targetPassIndex) {
-                throw new InvalidArgumentException(sprintf('Unknown compiler pass "%s".', $targetPassClassName));
-            }
-            $resultPasses[$targetPassIndex] = $srcPass;
-            $prop->setValue($passConfig, $resultPasses);
+        if ($passConfig) {
+            throw new \RuntimeException(__METHOD__ . ' Method is deprecated');
         }
     }
 }

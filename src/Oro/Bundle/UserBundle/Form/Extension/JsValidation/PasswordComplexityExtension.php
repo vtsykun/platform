@@ -3,6 +3,7 @@
 namespace Oro\Bundle\UserBundle\Form\Extension\JsValidation;
 
 use Symfony\Component\Form\AbstractTypeExtension;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\FormInterface;
 
@@ -69,6 +70,6 @@ class PasswordComplexityExtension extends AbstractTypeExtension
      */
     public function getExtendedType()
     {
-        return 'repeated';
+        return RepeatedType::class;
     }
 }

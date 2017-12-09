@@ -5,9 +5,9 @@ namespace Oro\Bundle\FormBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormTypeInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 use Oro\Bundle\SoapBundle\Form\EventListener\PatchSubscriber;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * This form type may be used to adapt any form type to be used as root form type for REST and SOAP API
@@ -36,12 +36,12 @@ class DecoratorApiType extends AbstractType
     protected $parentType;
 
     /**
-     * @param string            $typeName
+     * @param string $typeName
      * @param FormTypeInterface $parentType
      */
     public function __construct($typeName, FormTypeInterface $parentType)
     {
-        $this->typeName   = $typeName;
+        $this->typeName = $typeName;
         $this->parentType = $parentType;
     }
 
@@ -58,14 +58,14 @@ class DecoratorApiType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $this->parentType->setDefaultOptions($resolver);
+        $this->parentType->configureOptions($resolver);
 
         $resolver->setDefaults(
             [
                 'cascade_validation' => true,
-                'csrf_protection'    => false
+                'csrf_protection' => false
             ]
         );
     }
@@ -75,14 +75,6 @@ class DecoratorApiType extends AbstractType
      */
     public function getParent()
     {
-        return $this->parentType->getName();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return $this->typeName;
+        return get_class($this->parentType);
     }
 }

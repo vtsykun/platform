@@ -62,9 +62,9 @@ class TranslationController extends FOSRestController
      */
     public function cgetAction()
     {
-        $page   = (int)$this->getRequest()->get('page', 1);
-        $limit  = (int)$this->getRequest()->get('limit', RestGetController::ITEMS_PER_PAGE);
-        $domain = $this->getRequest()->get('domain', 'messages');
+        $page   = (int)$this->get('request_stack')->getCurrentRequest()->get('page', 1);
+        $limit  = (int)$this->get('request_stack')->getCurrentRequest()->get('limit', RestGetController::ITEMS_PER_PAGE);
+        $domain = $this->get('request_stack')->getCurrentRequest()->get('domain', 'messages');
 
         $result = $this->get('translator')->getTranslations([$domain]);
 

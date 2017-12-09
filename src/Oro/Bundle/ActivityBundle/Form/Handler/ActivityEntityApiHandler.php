@@ -6,15 +6,14 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Persistence\ObjectManager;
 
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 use Oro\Bundle\ActivityBundle\Model\ActivityInterface;
 use Oro\Bundle\ActivityBundle\Manager\ActivityManager;
-use Oro\Bundle\SoapBundle\Form\Handler\ApiFormHandler;
 
-class ActivityEntityApiHandler extends ApiFormHandler
+class ActivityEntityApiHandler
 {
     /** @var ActivityManager */
     protected $activityManager;
@@ -23,22 +22,40 @@ class ActivityEntityApiHandler extends ApiFormHandler
     protected $authorizationChecker;
 
     /**
-     * @param FormInterface                 $form
-     * @param Request                       $request
-     * @param ObjectManager                 $entityManager
-     * @param ActivityManager               $activityManager
+     * @var ObjectManager
+     */
+    protected $entityManager;
+
+    /**
+     * @var RequestStack
+     */
+    protected $requestStack;
+
+    /**
+     * @var FormInterface
+     */
+    protected $form;
+
+
+    /**
+     * @param FormInterface $form
+     * @param RequestStack $requestStack
+     * @param ObjectManager $entityManager
+     * @param ActivityManager $activityManager
      * @param AuthorizationCheckerInterface $authorizationChecker
      */
     public function __construct(
         FormInterface $form,
-        Request $request,
+        RequestStack $requestStack,
         ObjectManager $entityManager,
         ActivityManager $activityManager,
         AuthorizationCheckerInterface $authorizationChecker
     ) {
-        parent::__construct($form, $request, $entityManager);
         $this->activityManager = $activityManager;
         $this->authorizationChecker = $authorizationChecker;
+        $this->requestStack = $requestStack;
+        $this->form = $form;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -62,8 +79,17 @@ class ActivityEntityApiHandler extends ApiFormHandler
     public function process($entity)
     {
         $this->checkPermissions($entity);
+        $request = $this->requestStack->getCurrentRequest();
+        $entity = $this->prepareFormData($entity);
 
-        return parent::process($entity);
+        if (in_array($request->getMethod(), ['POST', 'PUT'], true)) {
+            $this->form->submit($request);
+            if ($this->form->isValid()) {
+                return $this->onSuccess($entity) ?: $entity;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -79,6 +105,8 @@ class ActivityEntityApiHandler extends ApiFormHandler
         $this->activityManager->addActivityTargets($activity, $relations->toArray());
 
         $this->entityManager->flush();
+        
+        return true;
     }
 
     /**

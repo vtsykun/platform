@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
 
 use Symfony\Component\Console\Helper\Table as TableHelper;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -85,7 +86,7 @@ class InstallCommand extends AbstractCommand implements InstallCommandInterface
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->inputOptionProvider = new InputOptionProvider($output, $input, $this->getHelperSet()->get('dialog'));
+        $this->inputOptionProvider = new InputOptionProvider($output, $input, $this->getHelperSet()->get('question'));
         if (false === $input->isInteractive()) {
             $this->validate($input);
         }
@@ -124,7 +125,8 @@ class InstallCommand extends AbstractCommand implements InstallCommandInterface
                 ->loadDataStep($commandExecutor, $output)
                 ->finalStep($commandExecutor, $output, $input, $skipAssets);
         } catch (\Exception $exception) {
-            return $commandExecutor->getLastCommandExitCode();
+            throw $exception;
+            //return $commandExecutor->getLastCommandExitCode();
         }
 
         $output->writeln('');
@@ -630,8 +632,7 @@ class InstallCommand extends AbstractCommand implements InstallCommandInterface
      */
     protected function renderTable(array $collection, $header, OutputInterface $output)
     {
-        /** @var TableHelper $table */
-        $table = $this->getHelperSet()->get('table');
+        $table = new Table($output);
 
         $table
             ->setHeaders(['Check  ', $header])
@@ -651,7 +652,7 @@ class InstallCommand extends AbstractCommand implements InstallCommandInterface
             }
         }
 
-        $table->render($output);
+        $table->render();
     }
 
     /**

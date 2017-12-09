@@ -2,6 +2,7 @@
 
 namespace Oro\Bundle\SecurityBundle;
 
+use Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -58,23 +59,16 @@ class OroSecurityBundle extends Bundle
         $container->addCompilerPass(new OwnershipTreeProvidersPass());
         $container->addCompilerPass(new AclGroupProvidersPass());
         $container->addCompilerPass(new AclPrivilegeFilterPass());
+        $container->addCompilerPass(new RemoveAclSchemaListenerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 4);
+        $container->addCompilerPass(new DecorateAuthorizationCheckerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 4);
         if ($container instanceof ExtendedContainerBuilder) {
-            $container->addCompilerPass(new RemoveAclSchemaListenerPass());
-            $container->moveCompilerPassBefore(
-                RemoveAclSchemaListenerPass::class,
-                RegisterEventListenersAndSubscribersPass::class
-            );
-            $container->addCompilerPass(new DecorateAuthorizationCheckerPass());
-            $container->moveCompilerPassBefore(
-                DecorateAuthorizationCheckerPass::class,
-                LoggerChannelPass::class
-            );
             $container->addCompilerPass(
                 new SetPublicForDecoratedAuthorizationCheckerPass(),
                 PassConfig::TYPE_BEFORE_REMOVING
             );
         }
 
+        /** @var SecurityExtension $extension */
         $extension = $container->getExtension('security');
         $extension->addSecurityListenerFactory(new OrganizationFormLoginFactory());
         $extension->addSecurityListenerFactory(new OrganizationHttpBasicFactory());

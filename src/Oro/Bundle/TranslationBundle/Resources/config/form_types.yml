@@ -16,9 +16,9 @@ services:
             - { name: form.type, alias: genemu_jqueryselect2_translatable_entity }
 
     oro_translation.form.extension.translatable_choice:
-        class: %oro_translation.form.extension.translatable_choice.class%
+        class: '%oro_translation.form.extension.translatable_choice.class%'
         tags:
-            - { name: form.type_extension, alias: choice }
+            - { name: form.type_extension, alias: choice, extended_type: 'Symfony\Component\Form\Extension\Core\Type\ChoiceType'  }
 
     oro_translation.form.type.add_language:
         class: 'Oro\Bundle\TranslationBundle\Form\Type\AddLanguageType'
