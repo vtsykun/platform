@@ -19,7 +19,7 @@ class UserApiKeyGenType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('apiKey', 'oro_user_apikey_gen_key');
+        $builder->add('apiKey', UserApiKeyGenKeyType::class);
     }
 
     /**
@@ -39,13 +39,6 @@ class UserApiKeyGenType extends AbstractType
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return $this->getBlockPrefix();
-    }
 
     /**
      * {@inheritdoc}

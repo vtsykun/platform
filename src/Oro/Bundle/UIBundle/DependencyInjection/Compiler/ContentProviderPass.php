@@ -40,8 +40,12 @@ class ContentProviderPass implements CompilerPassInterface
             );
         }
 
+        $twigCache = $container->getDefinition('twig.cache_warmer');
+        $twigCache->setClass('Oro\Bundle\UIBundle\Cache\TemplateCacheCacheWarmer');
+
         if ($container->hasDefinition(self::TWIG_SERVICE_KEY)) {
             $twig = $container->getDefinition(self::TWIG_SERVICE_KEY);
+            $twig->setClass('Oro\Bundle\UIBundle\Twig\Environment');
             $twig->addMethodCall(
                 'addGlobal',
                 ['oro_ui_content_provider_manager', new Reference(self::CONTENT_PROVIDER_MANAGER_SERVICE)]

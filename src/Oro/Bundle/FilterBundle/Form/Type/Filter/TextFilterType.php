@@ -3,8 +3,8 @@
 namespace Oro\Bundle\FilterBundle\Form\Type\Filter;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Translation\TranslatorInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 use Oro\Bundle\FilterBundle\Filter\FilterUtility;
 
@@ -17,7 +17,6 @@ class TextFilterType extends AbstractType
     const TYPE_ENDS_WITH    = 5;
     const TYPE_IN           = 6;
     const TYPE_NOT_IN       = 7;
-    const NAME              = 'oro_type_text_filter';
 
     /**
      * @var TranslatorInterface
@@ -33,19 +32,11 @@ class TextFilterType extends AbstractType
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public function getName()
-    {
-        return $this->getBlockPrefix();
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getBlockPrefix()
     {
-        return self::NAME;
+        return 'oro_type_text_filter';
     }
 
     /**
@@ -53,13 +44,13 @@ class TextFilterType extends AbstractType
      */
     public function getParent()
     {
-        return FilterType::NAME;
+        return FilterType::class;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $choices = array(
             self::TYPE_CONTAINS           => $this->translator->trans('oro.filter.form.label_type_contains'),

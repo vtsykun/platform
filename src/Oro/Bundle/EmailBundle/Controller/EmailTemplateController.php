@@ -104,7 +104,7 @@ class EmailTemplateController extends Controller
         /** @var FormInterface $form */
         $form = $this->get('oro_email.form.emailtemplate');
         $form->setData($emailTemplate);
-        $request = $this->get('request');
+        $request = $this->get('request_stack')->getCurrentRequest();
 
         if (in_array($request->getMethod(), array('POST', 'PUT'))) {
             $form->submit($request);

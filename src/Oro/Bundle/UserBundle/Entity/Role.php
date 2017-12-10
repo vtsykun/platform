@@ -100,7 +100,7 @@ class Role extends ExtendRole implements \Serializable
     {
         if ($this->id) {
             $this->id = null;
-            $this->setRole($this->role);
+            $this->setRole($this->role, false);
         }
     }
 

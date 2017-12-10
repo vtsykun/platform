@@ -346,9 +346,9 @@ services:
     oro_user.form.type.apikey_gen:
         class: Oro\Bundle\UserBundle\Form\Type\UserApiKeyGenType
         tags:
-            - { name: form.type, alias: oro_user_apikey_gen }
+            - { name: form.type }
 
     oro_user.form.type.apikey_gen_key:
         class: Oro\Bundle\UserBundle\Form\Type\UserApiKeyGenKeyType
         tags:
-            - { name: form.type, alias: oro_user_apikey_gen_key }
+            - { name: form.type }

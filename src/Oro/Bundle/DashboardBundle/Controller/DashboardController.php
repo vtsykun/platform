@@ -79,7 +79,7 @@ class DashboardController extends Controller
             return $this->quickLaunchpadAction();
         }
 
-        $changeActive = $this->get('request')->get('change_dashboard', false);
+        $changeActive = $this->get('request_stack')->getCurrentRequest()->get('change_dashboard', false);
         if ($changeActive && $dashboard) {
             $this->getDashboardManager()->setUserActiveDashboard(
                 $currentDashboard,

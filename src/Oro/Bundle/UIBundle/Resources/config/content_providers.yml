@@ -4,7 +4,7 @@ parameters:
 
 services:
     oro_ui.content_provider.current_route:
-        class: %oro_ui.content_provider.current_route.class%
+        class: '%oro_ui.content_provider.current_route.class%'
         synchronized: true
         calls:
             - [setRequest, ["@?request="]]
@@ -12,7 +12,7 @@ services:
             - { name: oro_ui.content_provider }
 
     oro_ui.content_provider.flash_messages:
-        class: %oro_ui.content_provider.flash_messages.class%
+        class: '%oro_ui.content_provider.flash_messages.class%'
         arguments:
             - '@session'
         tags:

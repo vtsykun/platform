@@ -66,6 +66,6 @@ class EmailStringFilter extends StringFilter
      */
     protected function getFormType()
     {
-        return TextFilterType::NAME;
+        return TextFilterType::class;
     }
 }

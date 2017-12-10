@@ -67,7 +67,7 @@ class StringFilter extends AbstractFilter
      */
     protected function getFormType()
     {
-        return TextFilterType::NAME;
+        return TextFilterType::class;
     }
 
     /**

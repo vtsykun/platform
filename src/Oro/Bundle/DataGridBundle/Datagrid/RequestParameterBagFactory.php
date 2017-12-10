@@ -2,16 +2,16 @@
 
 namespace Oro\Bundle\DataGridBundle\Datagrid;
 
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class RequestParameterBagFactory
 {
     const DEFAULT_ROOT_PARAM = 'grid';
 
     /**
-     * @var Request
+     * @var RequestStack
      */
-    protected $request;
+    protected $requestStack;
 
     /**
      * @var string
@@ -33,7 +33,7 @@ class RequestParameterBagFactory
      */
     public function fetchParameters($gridParameterName = self::DEFAULT_ROOT_PARAM)
     {
-        $parameters = $this->request->get($gridParameterName, []);
+        $parameters = $this->requestStack->getCurrentRequest()->get($gridParameterName, []);
 
         if (!is_array($parameters)) {
             $parameters = [];
@@ -59,12 +59,12 @@ class RequestParameterBagFactory
     }
 
     /**
-     * @param Request $request
+     * @param RequestStack $request
      */
-    public function setRequest(Request $request = null)
+    public function setRequestStack(RequestStack $request = null)
     {
-        if ($request instanceof Request) {
-            $this->request = $request;
+        if ($request instanceof RequestStack) {
+            $this->requestStack = $request;
         }
     }
 
@@ -74,7 +74,7 @@ class RequestParameterBagFactory
      */
     protected function getMinifiedParameters($gridParameterName)
     {
-        $gridData = $this->request->get(self::DEFAULT_ROOT_PARAM, array());
+        $gridData = $this->requestStack->getCurrentRequest()->get(self::DEFAULT_ROOT_PARAM, array());
         if (empty($gridData[$gridParameterName])) {
             return null;
         }

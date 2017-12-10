@@ -52,7 +52,7 @@ services:
         arguments:                    ["oro_integration_channel_form", "oro_integration_channel_form", null]
 
     oro_integration.form.type.channel:
-        class: %oro_integration.form.type.channel.class%
+        class: '%oro_integration.form.type.channel.class%'
         arguments:
             - '@oro_integration.form.subscriber.default_owner_subscriber'
             - '@oro_integration.form.subscriber.channel_subscriber'

@@ -2,6 +2,7 @@
 
 namespace Oro\Bundle\UserBundle\Controller;
 
+use Oro\Bundle\UserBundle\Form\Type\UserApiKeyGenType;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -69,7 +70,7 @@ class UserController extends Controller
             throw $this->createAccessDeniedException();
         }
         $userApi = $this->getUserApi($user);
-        $form = $this->createForm('oro_user_apikey_gen', $userApi);
+        $form = $this->createForm(UserApiKeyGenType::class, $userApi);
 
         $request = $this->container->get('request_stack')->getCurrentRequest();
         if ($request->getMethod() === 'POST') {

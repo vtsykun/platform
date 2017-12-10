@@ -96,7 +96,7 @@ class TranslationController extends FOSRestController
         $includeHandler->handle(
             new Context(
                 $this,
-                $this->get('request'),
+                $this->get('request_stack')->getCurrentRequest(),
                 $response,
                 RestGetController::ACTION_LIST,
                 $responseContext

@@ -11,7 +11,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class FilterType extends AbstractType
 {
-    const NAME = 'oro_type_filter';
+    const NAME = FilterType::class;
 
     /**
      * @var TranslatorInterface
@@ -27,19 +27,11 @@ class FilterType extends AbstractType
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public function getName()
-    {
-        return $this->getBlockPrefix();
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getBlockPrefix()
     {
-        return self::NAME;
+        return 'oro_type_filter';
     }
 
     /**

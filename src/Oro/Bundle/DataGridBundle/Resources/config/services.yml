@@ -44,7 +44,7 @@ parameters:
 
 services:
     oro_datagrid.datagrid.manager:
-        class: %oro_datagrid.datagrid.manager.class%
+        class: '%oro_datagrid.datagrid.manager.class%'
         arguments:
             - '@oro_datagrid.configuration.provider.chain'
             - '@oro_datagrid.datagrid.builder'
@@ -52,49 +52,49 @@ services:
             - '@oro_datagrid.datagrid.name_strategy'
 
     oro_datagrid.datagrid.name_strategy:
-        class: %oro_datagrid.datagrid.name_strategy.class%
+        class: '%oro_datagrid.datagrid.name_strategy.class%'
 
     oro_datagrid.datagrid.manager.link:
         tags:
             - { name: oro_service_link,  service: oro_datagrid.datagrid.manager }
 
     oro_datagrid.event.dispatcher:
-        class: %oro_datagrid.event.dispatcher.class%
+        class: '%oro_datagrid.event.dispatcher.class%'
         arguments: ['@event_dispatcher']
 
     oro_datagrid.datagrid.builder:
-        class: %oro_datagrid.datagrid.builder.class%
+        class: '%oro_datagrid.datagrid.builder.class%'
         arguments:
-            - %oro_datagrid.datagrid.base.class%
-            - %oro_datagrid.extension.acceptor.class%
+            - '%oro_datagrid.datagrid.base.class%'
+            - '%oro_datagrid.extension.acceptor.class%'
             - '@oro_datagrid.event.dispatcher'
         lazy: true
 
     oro_datagrid.datagrid.request_parameters_factory:
-        class: %oro_datagrid.datagrid.request_parameters_factory.class%
+        class: '%oro_datagrid.datagrid.request_parameters_factory.class%'
         arguments:
-            - %oro_datagrid.datagrid.parameters.class%
+            - '%oro_datagrid.datagrid.parameters.class%'
         calls:
-            - [setRequest, ["@?request="]]
+            - [setRequestStack, ["@request_stack"]]
 
     oro_datagrid.datagrid.guesser:
-        class: %oro_datagrid.datagrid.guesser.class%
+        class: '%oro_datagrid.datagrid.guesser.class%'
         arguments:
             - '@service_container'
             - [] # a list of service ids of column options guessers
 
     oro_datagrid.datagrid.column_options_guesser:
-        class: %oro_datagrid.datagrid.column_options_guesser.class%
+        class: '%oro_datagrid.datagrid.column_options_guesser.class%'
         tags:
             - { name: oro_datagrid.column_options_guesser }
 
     oro_datagrid.provider.resolver:
-        class: %oro_datagrid.provider.resolver.class%
+        class: '%oro_datagrid.provider.resolver.class%'
         arguments:
             - '@service_container'
 
     oro_datagrid.configuration.provider:
-        class: %oro_datagrid.configuration.provider.class%
+        class: '%oro_datagrid.configuration.provider.class%'
         arguments:
             - '@oro_datagrid.provider.resolver'
             - '@oro_datagrid.configuration_provider.cache'
@@ -108,7 +108,7 @@ services:
             - [ setNamespace, [ 'oro_datagrid_configuration' ] ]
 
     oro_datagrid.configuration.provider.chain:
-        class: %oro_datagrid.configuration.provider.chain.class%
+        class: '%oro_datagrid.configuration.provider.chain.class%'
 
     oro_datagrid.twig.datagrid:
         class: 'Oro\Bundle\DataGridBundle\Twig\DataGridExtension'
@@ -119,26 +119,26 @@ services:
             - { name: twig.extension }
 
     oro_datagrid.event_listener.datasource_bind_parameters:
-        class: %oro_datagrid.event_listener.datasource_bind_parameters.class%
+        class: '%oro_datagrid.event_listener.datasource_bind_parameters.class%'
         tags:
             - { name: kernel.event_listener, event: oro_datagrid.datagrid.build.after, method: onBuildAfter, priority: 255 }
 
     oro_datagrid.event_listener.ormdatasource_acl:
-        class: %oro_datagrid.event_listener.ormdatasource_acl.class%
+        class: '%oro_datagrid.event_listener.ormdatasource_acl.class%'
         arguments:
             - '@oro_security.acl_helper'
         tags:
             - { name: kernel.event_listener, event: oro_datagrid.orm_datasource.result.before, method: onResultBefore }
 
     oro_datagrid.event_listener.row_selection:
-        class: %oro_datagrid.event_listener.row_selection.class%
+        class: '%oro_datagrid.event_listener.row_selection.class%'
         arguments:
             - '@oro_entity.doctrine_helper'
         tags:
             - { name: kernel.event_listener, event: oro_datagrid.datagrid.build.after, method: onBuildAfter, priority: 255 }
 
     oro_datagrid.event_listener.cell_selection:
-        class: %oro_datagrid.event_listener.cell_selection.class%
+        class: '%oro_datagrid.event_listener.cell_selection.class%'
         tags:
             - { name: kernel.event_listener, event: oro_datagrid.datagrid.build.after, method: onBuildAfter, priority: 255 }
 

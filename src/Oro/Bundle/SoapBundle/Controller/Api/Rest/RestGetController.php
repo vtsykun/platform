@@ -401,7 +401,7 @@ abstract class RestGetController extends FOSRestController implements EntityMana
         }
 
         $includeHandler = $this->get('oro_soap.handler.include');
-        $includeHandler->handle(new Context($this, $this->get('request'), $response, $action, $contextValues));
+        $includeHandler->handle(new Context($this, $this->get('request_stack')->getCurrentRequest(), $response, $action, $contextValues));
 
         return $response;
     }
