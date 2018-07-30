@@ -52,6 +52,9 @@ class RelationMetadataBuilder implements MetadataBuilderInterface
         $relations = $extendConfig->get('relation', false, []);
         $schema    = $extendConfig->get('schema', false, []);
         foreach ($relations as $relationKey => $relation) {
+            if (!class_exists($relation['target_entity'])) {
+                continue;
+            }
             $configRelationEntity = $this->configManager->getEntityConfig('extend', $relation['target_entity']);
 
             /** @var FieldConfigId $fieldId */
